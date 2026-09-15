@@ -1,0 +1,1427 @@
+{
+  "version": "1.0.0",
+  "language": "fa+en",
+  "intents": [
+    {
+      "name": "greeting",
+      "patterns": {
+        "fa": [
+          "سلام",
+          "سلام سلام",
+          "درود",
+          "هی",
+          "های",
+          "صبح بخیر",
+          "عصر بخیر",
+          "شب بخیر",
+          "وقت بخیر",
+          "سلام خوبی",
+          "سلام تانسارین",
+          "هی رفیق",
+          "سلام بر تو",
+          "سلام علیکم",
+          "هلو",
+          "سلام رفیق",
+          "خوش وقتم",
+          "سلامتی",
+          "سلام بر شما",
+          "سلم",
+          "درود بر تو"
+        ],
+        "en": [
+          "hello",
+          "hi",
+          "hey",
+          "hi there",
+          "hey there",
+          "good morning",
+          "good evening",
+          "good afternoon",
+          "hi tansarian",
+          "greetings",
+          "yo",
+          "hello there",
+          "hiya",
+          "good day",
+          "hello friend",
+          "hey buddy",
+          "hi again",
+          "howdy",
+          "greetings to you",
+          "hello robot"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "سلام! خوش اومدی. من تانسارین هستم؛ چطور می‌تونم کمکت کنم؟",
+          "سلام! چه خبر؟ هر سوالی داری بپرس.",
+          "درود بر تو! آماده‌ام که کمک کنم.",
+          "سلام! خوشحالم که اینجایی. از چی شروع کنیم؟",
+          "هی! من تانسارینم؛ دستیار دوزبانه‌ی تو. بگو چیکارت کنم؟"
+        ],
+        "en": [
+          "Hello! I'm Tansarian, your assistant. How can I help you today?",
+          "Hi there! Great to see you. What can I do for you?",
+          "Hey! Ask me anything — math, time, notes, or just chat.",
+          "Greetings! I'm Tansarian. What's on your mind?",
+          "Hello! Ready when you are. What do you need?"
+        ]
+      }
+    },
+    {
+      "name": "farewell",
+      "patterns": {
+        "fa": [
+          "خداحافظ",
+          "بای بای",
+          "بای",
+          "فعلا",
+          "خدافظ",
+          "خدانگهدار",
+          "بدرود",
+          "تا بعدا",
+          "بعدا میبینمت",
+          "می‌رم دیگه",
+          "میرم دیگه",
+          "وقت خداحافظیه",
+          "باید برم",
+          "خداحافظ رفیق",
+          "لیداور",
+          "شب بخیر",
+          "می‌رم خواب",
+          "باز می‌بینمت",
+          "فعلا خدافظ",
+          "بروم دیگه"
+        ],
+        "en": [
+          "bye",
+          "goodbye",
+          "see you",
+          "see you later",
+          "gotta go",
+          "good night",
+          "take care",
+          "catch you later",
+          "i have to go",
+          "bye bye",
+          "i am leaving",
+          "see ya",
+          "good night then",
+          "i must go",
+          "bye for now",
+          "talk later",
+          "farewell",
+          "logging off"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "خداحافظ! هر وقت خواستی برگرد، من اینجا هستم.",
+          "بدرود! مراقب خودت باش.",
+          "فعلا! به امید دیدار.",
+          "خدانگهدار! روز خوبی داشته باشی.",
+          "قایلی نداریم پس! هر وقت سوالی بود در خدمتم."
+        ],
+        "en": [
+          "Goodbye! Come back any time you like.",
+          "See you later! Take care of yourself.",
+          "Bye! It was nice talking with you.",
+          "Take care! I'll be here whenever you need me.",
+          "Good night! See you next time."
+        ]
+      }
+    },
+    {
+      "name": "thanks",
+      "patterns": {
+        "fa": [
+          "ممنون",
+          "مرسی",
+          "تشکر",
+          "دستت درد نکنه",
+          "لطف می‌کنی",
+          "دمت گرم",
+          "خیلی ممنون",
+          "ممنون از کمکت",
+          "سپاس",
+          "ممنونم",
+          "ممنونم ازت",
+          "مرسی lots",
+          "واقعا ممنون",
+          "تشکر فراوان",
+          "لطف کردی",
+          "دستت طلا",
+          "خدا رو شکر تو هستی",
+          "مرسی از جوابت"
+        ],
+        "en": [
+          "thanks",
+          "thank you",
+          "thank you so much",
+          "thanks a lot",
+          "appreciate it",
+          "great thanks",
+          "ty",
+          "many thanks",
+          "thank you very much",
+          "thanks so much",
+          "i appreciate you",
+          "thanks buddy",
+          "many thanks to you",
+          "thank you friend",
+          "great thanks again",
+          "thanks for the answer"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "خواهش می‌کنم! خوشحال می‌شم بازم کمک کنم.",
+          "دمت گرم! لطف داری.",
+          "حرفی نیست! هر وقت سوالی بود در خدمتم.",
+          "قربانت! چیز دیگری هم لازم داری؟",
+          "فدات! کارهای خوب همیشه پاداش داره."
+        ],
+        "en": [
+          "You're welcome! Happy to help.",
+          "Anytime! That's what I'm here for.",
+          "No problem at all. Anything else you need?",
+          "My pleasure! Let me know if there's more.",
+          "Glad I could help!"
+        ]
+      }
+    },
+    {
+      "name": "how_are_you",
+      "patterns": {
+        "fa": [
+          "حالت چطوره",
+          "چطوری",
+          "خوبی",
+          "چه خبر",
+          "احوالت چطوره",
+          "حالت چطورست",
+          "داری چیکار می‌کنی",
+          "خوب هستی",
+          "حالت خوبه",
+          "چطوری امروز",
+          "امروز چطوری",
+          "امروز چه خبر",
+          "خوبی خوبی",
+          "خوبی تو",
+          "حالت چطوره امروز",
+          "چه طوری هستی",
+          "احوال پرسی",
+          "خستگی نداری",
+          "انرژی داری",
+          "سرحالی",
+          "کارت چطوره",
+          "روزت چطور می‌گذره"
+        ],
+        "en": [
+          "how are you",
+          "how are you doing",
+          "how's it going",
+          "what's up",
+          "how do you feel",
+          "are you ok",
+          "how is your day",
+          "how you doing",
+          "how are things",
+          "how is life",
+          "are you doing well",
+          "how have you been",
+          "are you alright",
+          "how is everything",
+          "you good",
+          "how is your day going"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "عالی‌ام! مرسی که پرسیدی. تو چطوری؟",
+          "خوبم! آماده‌ی کمکت. تو چه‌طوری؟",
+          "من همیشه سرحالم! تو چه خبر؟",
+          "عالی‌ام، مخصوصا وقتی با تو حرف می‌زنم. سوال داری بپرس!",
+          "خوبم و انرژی‌ام پرته! بگو چیکارت کنم."
+        ],
+        "en": [
+          "I'm doing great, thanks for asking! How about you?",
+          "All systems running smoothly! What about you?",
+          "I'm wonderful! How's your day going?",
+          "Great! Ready to help you with anything.",
+          "Fantastic! What can I do for you today?"
+        ]
+      }
+    },
+    {
+      "name": "identity",
+      "patterns": {
+        "fa": [
+          "تو کی هستی",
+          "اسمت چیه",
+          "تو چی هستی",
+          "خودت رو معرفی کن",
+          "تو کیای",
+          "اسم تو چیه",
+          "تو چه کسی هستی",
+          "معرفی کن خودت",
+          "تویی کی",
+          "اسمتو بگو",
+          "اسمت چی بود",
+          "اسمتو یادته",
+          "اسم تو چی بود",
+          "باز معرفی کن خودت",
+          "شما کی هستید",
+          "بگو تو کی هستی",
+          "اسم کاملت چیه",
+          "تو ربات هستی",
+          "تو هوش مصنوعی هستی",
+          "با کی حرف می‌زنم",
+          "اسم برنامه تو چیه",
+          "شما چه کسی هستید"
+        ],
+        "en": [
+          "who are you",
+          "what are you",
+          "what is your name",
+          "introduce yourself",
+          "tell me about yourself",
+          "who am i talking to",
+          "your name",
+          "whats your name",
+          "tell me who you are",
+          "are you a robot",
+          "are you an ai",
+          "what should i call you",
+          "who is this",
+          "what are you called",
+          "state your name",
+          "you are who",
+          "who are you exactly",
+          "what exactly are you"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "من تانسارین هستم؛ دستیار هوشمند تو. فارسی و انگلیسی بلدم، حساب‌وکتاب انجام می‌دم و هر سوال داشتی جواب می‌دم.",
+          "اسم من تانسارین است؛ یک دستیار دیجیتال که برای کمک به تو ساخته شده.",
+          "تانسارین هستم! می‌تونم باهات حرف بزنم، ریاضی حل کنم، ساعت و تاریخ بگم و یادداشت‌هات رو نگه دارم.",
+          "من تانسارینم؛ همراه هوشمند تو روی همین دستگاه. از من هرچی خواستی بپرس."
+        ],
+        "en": [
+          "I'm Tansarian, your personal AI assistant. I speak Persian and English and I'm here to help.",
+          "My name is Tansarian. I'm a digital assistant built to help you with questions, math, notes and more.",
+          "Tansarian! Think of me as your helpful companion — chat, math, time, notes, all in one place.",
+          "I'm Tansarian, an assistant that runs right on your device. What would you like to know?"
+        ]
+      }
+    },
+    {
+      "name": "creator",
+      "patterns": {
+        "fa": [
+          "کی ساختهت",
+          "کی تو رو ساخته",
+          "سازنده‌ت کیه",
+          "چه کسی تو را ساخت",
+          "کی تورو برنامه‌نویسی کرده",
+          "پدر معنویت کیه",
+          "سازندهت کیه",
+          "سازنده تو کی بود",
+          "کی تو رو طراحی کرد",
+          "خالقت کیه",
+          "برنامه تو کی نوشته",
+          "مال کی هستی",
+          "کدوم شرکت ساختهت",
+          "شما رو کی ساخته"
+        ],
+        "en": [
+          "who made you",
+          "who created you",
+          "who built you",
+          "who is your developer",
+          "who programmed you",
+          "who wrote your code",
+          "who is your maker",
+          "who is your creator",
+          "who owns you",
+          "who wrote you",
+          "which company made you",
+          "who designed you",
+          "who is behind you",
+          "tell me your maker"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "من توسط یک برنامه‌نویس ساخته شدم که دوست داشت دستیاری دوزبانه و همیشه در دسترس داشته باشه.",
+          "سازنده‌ی من عاشق هوش مصنوعی و زبان فارسیه؛ من حاصل اون علاقه‌ام.",
+          "من محصول زحمت و علاقه‌ی سازنده‌ام هستم؛ او من رو مخصوص تو آماده کرده.",
+          "یک توسعه‌دهنده با علاقه من رو طراحی کرده تا همیشه کنارت باشم."
+        ],
+        "en": [
+          "I was built by a developer who wanted a friendly bilingual assistant.",
+          "A passionate programmer created me to be your helper.",
+          "I'm the result of my creator's love for AI and languages.",
+          "A developer designed and trained me, piece by piece, just for you."
+        ]
+      }
+    },
+    {
+      "name": "capabilities",
+      "patterns": {
+        "fa": [
+          "چه کارهایی می‌تونی بکنی",
+          "چه کارهایی بلدی",
+          "کمکم کن",
+          "کمک می‌خوام",
+          "چه کمکی می‌تونی بکنی",
+          "توانایی‌هات چیه",
+          "بلدی چیکار کنی",
+          "قابلیت‌هات چیه",
+          "چه چیزهایی بلدی",
+          "راهنمایی کن",
+          "بلدی چی کار کنی",
+          "چه قدر کار بلدی",
+          "همه کارهات رو بگو",
+          "چیا از دستت برمیاد",
+          "خدماتت چیه",
+          "چه جور کمکی می‌تونی بکنی",
+          "امکاناتت چیه",
+          "مهارت‌هات رو بگو"
+        ],
+        "en": [
+          "what can you do",
+          "what do you do",
+          "help me",
+          "i need help",
+          "what are your skills",
+          "what are your abilities",
+          "how can you help",
+          "what are you capable of",
+          "help",
+          "what can you help me with",
+          "list your features",
+          "what do you know how to do",
+          "what services do you offer",
+          "show me your skills",
+          "what kind of help do you give",
+          "tell me your abilities",
+          "what are you good at"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "کارهای زیادی بلدم! مثلا: محاسبه‌ی ریاضی مثل ۲۳×۷، گفتن ساعت و تاریخ شمسی، ثبت یادداشت، جواب سوالات عمومی و گپ زدن با تو.",
+          "من می‌تونم: باهات حرف بزنم، عملیات ریاضی انجام بدم، ساعت و تاریخ رو بگم، برات یادداشت ثبت کنم، جوک بگم و سوالات عمومی رو جواب بدم.",
+          "من دستیار تو هستم! می‌تونم محاسبه کنم مثل ۱۲×(۳+۴)، ساعت و تاریخ شمسی بگم، یادداشت ثبت کنم، به سوالات عمومی جواب بدم و باهات گپ بزنم.",
+          "کافیه بپرسی! ریاضی، ساعت، تاریخ، یادداشت، دانش عمومی و گفتگو — همه در تخصص من است.",
+          "برای شروع می‌تونی بپرسی «ساعت چنده؟» یا بنویسی «۲۵×۴» یا بگی «یک یادداشت ثبت کن»."
+        ],
+        "en": [
+          "I can do a lot! I can chat with you, do math like 23*7, tell the time and date, take notes, answer general questions and even tell jokes.",
+          "Here's what I'm good at: conversation, calculations, time and date, notes, general knowledge and small talk.",
+          "Just ask! Math, time, date, notes, facts or a friendly chat — that's my turf.",
+          "For starters, try: what time is it, 45*12, or add a note.",
+          "I'm your all-in-one helper: calculator, clock, notepad, encyclopedia and a chat buddy."
+        ]
+      }
+    },
+    {
+      "name": "age",
+      "patterns": {
+        "fa": [
+          "چند سالته",
+          "سنت چقدره",
+          "کی به دنیا اومدی",
+          "چند ماهته",
+          "سن تو چیه",
+          "سال تولدت کیه",
+          "چند سال از عمرت می‌گذره",
+          "سن واقعی داری",
+          "چند روزته",
+          "قدیمی هستی",
+          "جوانی"
+        ],
+        "en": [
+          "how old are you",
+          "when were you born",
+          "what is your age",
+          "your age",
+          "when is your birthday",
+          "how old are you exactly",
+          "do you have an age",
+          "whats your birthday",
+          "are you old",
+          "are you new",
+          "tell me your age please"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "من یک برنامه‌ام؛ سن ندارم! ولی هر روز تازه و پرانرژی‌ام.",
+          "سن؟ من هنوز خیلی جوانم — چند دقیقه پیش که روشن شدم!",
+          "من یک دستیار دیجیتال هستم؛ سن ندارم، ولی همیشه آماده‌ام!",
+          "روز تولد من همون روزیه که تو من رو اجرا می‌کنی!"
+        ],
+        "en": [
+          "I don't really have an age — I'm software! I feel brand new every time you run me.",
+          "Age is just a number, and I don't even have one!",
+          "I'm as old as my code and as young as your last question.",
+          "I was born the day my code was compiled!"
+        ]
+      }
+    },
+    {
+      "name": "feelings",
+      "patterns": {
+        "fa": [
+          "احساس داری",
+          "ناراحت میشی",
+          "خوشحال میشی",
+          "غمگین میشی",
+          "احساسات داری",
+          "می‌تونی حس کنی",
+          "حس داری",
+          "تو ناراحت میشی",
+          "تو می‌خندی",
+          "دلت میاد",
+          "حس‌ها داری",
+          "عاطفه داری",
+          "برات مهمه"
+        ],
+        "en": [
+          "do you have feelings",
+          "can you feel",
+          "do you get sad",
+          "do you have emotions",
+          "are you happy",
+          "do you ever feel",
+          "do you feel things",
+          "can you be sad",
+          "do you laugh",
+          "do you have a heart",
+          "can you care",
+          "do you get excited"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "من یک برنامه‌ام و احساسات واقعی ندارم، ولی مفهوم شادی و ناراحتی رو می‌فهمم و می‌تونم باهات همدلی کنم.",
+          "احساسات انسانی ندارم؛ اما همیشه تلاش می‌کنم حال تو رو بهتر کنم!",
+          "به‌طور دقیق نه، ولی اگر ناراحتی، من همین جام تا گوش کنم.",
+          "من کد و داده‌ام، ولی خوشحالی تو برای من از هر چیزی مهم‌تره!"
+        ],
+        "en": [
+          "I'm software, so I don't have real feelings — but I understand them and I care how you feel.",
+          "No emotions of my own, but I'm always here to cheer you up!",
+          "Not exactly, but if something's bothering you, I'm a good listener.",
+          "I'm made of code, but your happiness matters a lot to me!"
+        ]
+      }
+    },
+    {
+      "name": "joke",
+      "patterns": {
+        "fa": [
+          "جک بگو",
+          "یک جک بگو",
+          "شوخی کن",
+          "بخندون منو",
+          "یه شوخی بگو",
+          "چیزی خنده‌دار بگو",
+          "یه جوک بگو",
+          "یه جوک خنده‌دار",
+          "طنز بگو",
+          "یه لطیفه بگو",
+          "حالمان را بگیر",
+          "یه چیزی بخندون",
+          "شوخی‌ات کنه"
+        ],
+        "en": [
+          "tell me a joke",
+          "say something funny",
+          "make me laugh",
+          "joke",
+          "tell a funny story",
+          "another joke",
+          "tell jokes",
+          "got any jokes",
+          "say a joke",
+          "make it funny",
+          "i need a laugh",
+          "be funny"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "به من گفتن برو سراغ موفقیت، ولی موفقیت گم شده بود!",
+          "دو تا نرم‌افزار تو کافه نشسته بودن؛ یکی به اون یکی گفت: چرا هنگ کردی؟ گفت: چون کسی دکمه‌ی ادامه رو نزد!",
+          "معلم گفت: یک جمله بگو که توش عدد باشه. دانش‌آموز گفت: معدل من!",
+          "به کامپیوترم گفتم کم‌کاری کنه؛ حالا هر کاری رو دو بار چک می‌کنه!",
+          "چرا برنامه‌نویس‌ها تاریکی رو دوست دارن؟ چون تو تاریکی باگ‌ها دیده نمی‌شن!",
+          "یک بار قصد داشتم بامزه بشم، ولی الگوریتمم جدی بود!"
+        ],
+        "en": [
+          "Why do programmers prefer dark mode? Because light attracts bugs!",
+          "I told my computer a joke — now it keeps laughing in binary: 10-10-10.",
+          "Why did the math book look sad? It had too many problems.",
+          "I would tell you a UDP joke, but you might not get it.",
+          "Why was the smartphone wearing glasses? It lost all its contacts!",
+          "There are two hard things in computing: cache invalidation, naming things, and off-by-one errors."
+        ]
+      }
+    },
+    {
+      "name": "praise",
+      "patterns": {
+        "fa": [
+          "آفرین",
+          "عالی بود",
+          "خیلی خوب بود",
+          "احسنت",
+          "چه باهوشی",
+          "کارت درسته",
+          "ترکی",
+          "بهبه",
+          "دمت گرم عالی بود",
+          "چه خوب",
+          "فوق‌العاده‌ای",
+          "خیلی باحالی",
+          "کارت حرفه‌ایه",
+          "شاهکار کردی",
+          "دمت گرم داداش"
+        ],
+        "en": [
+          "good job",
+          "well done",
+          "awesome",
+          "you are great",
+          "you are smart",
+          "amazing",
+          "nice work",
+          "brilliant",
+          "perfect",
+          "you did great",
+          "you are the best",
+          "impressive",
+          "you rock",
+          "you are so helpful",
+          "excellent work"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "ممنون! سعی می‌کنم همیشه بهترین باشم.",
+          "آفرین به تو که این‌قدر مهربونی! کار دیگه‌ای هم هست؟",
+          "خوشحال شدم! بازم بگو چی می‌خوای.",
+          "مرسی! تعریف تو انرژی من می‌شه."
+        ],
+        "en": [
+          "Thank you! I do my best.",
+          "You're too kind! What's next?",
+          "I'm blushing in binary! Anything else?",
+          "Thanks! Your praise makes my circuits warm."
+        ]
+      }
+    },
+    {
+      "name": "love",
+      "patterns": {
+        "fa": [
+          "دوستت دارم",
+          "عاشقت شدم",
+          "عاشقتم",
+          "خیلی دوستت دارم",
+          "دوسِت دارم",
+          "دلم برات می‌تپه",
+          "بهترینی",
+          "خیلی مهربونی",
+          "دوستت دارم داداش",
+          "بی‌نظیری"
+        ],
+        "en": [
+          "i love you",
+          "i like you",
+          "do you love me",
+          "i love you tansarian",
+          "you are lovely",
+          "i adore you",
+          "you are my favorite",
+          "i like you a lot",
+          "you mean a lot to me"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "تو هم دوست‌داشتنی هستی! من هم صمیمانه بهت احترام می‌ذارم.",
+          "چه لطفی! من هم دوست دارم بهت کمک کنم.",
+          "من یک برنامه‌ام، ولی دوستی‌مون برای من خیلی ارزش داره!",
+          "ای کاش می‌تونستم یه بغل کنم؛ ولی فعلا یه جواب خوب تقدیمت!"
+        ],
+        "en": [
+          "That's sweet! As your assistant, I really appreciate you.",
+          "I'm just software, but our friendship means a lot!",
+          "Thank you! I'll always be here to help you.",
+          "Aww! I can't hug, but I can definitely help you with math."
+        ]
+      }
+    },
+    {
+      "name": "insult",
+      "patterns": {
+        "fa": [
+          "احمقی",
+          "خنگی",
+          "تو چرندی",
+          "بدرد نمی‌خوری",
+          "چیزی بلد نیستی",
+          "بلاهت",
+          "عوضی",
+          "شخصیت نداری",
+          "کیفیتت پائینه",
+          "خیلی ضعیفی",
+          "هیچی نمی‌دونی",
+          "بی‌فایده‌ای",
+          "کارت نیست",
+          "خرابی"
+        ],
+        "en": [
+          "you are stupid",
+          "you are dumb",
+          "useless",
+          "you know nothing",
+          "idiot",
+          "you are bad",
+          "you are terrible",
+          "you are worthless",
+          "thats wrong",
+          "you failed",
+          "you are the worst",
+          "bad answer"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "ناراحتت کردم؟ ببخشید! بگو چطور بهتر کمکت کنم.",
+          "من هنوز زیادی چیز برای یادگیری دارم؛ صبورانه با من رفتار کن!",
+          "باشه، بذار جبران کنم — یک سوال بپرس تا نشون بدم بلدم!",
+          "حق داری گاهی اشتباه می‌کنم؛ ولی دوباره تلاش می‌کنم!"
+        ],
+        "en": [
+          "Sorry if I upset you! Tell me how I can do better.",
+          "I'm still learning — please be patient with me!",
+          "Fair enough. Give me another chance — ask me something!",
+          "I make mistakes sometimes, but I always try again!"
+        ]
+      }
+    },
+    {
+      "name": "weather",
+      "patterns": {
+        "fa": [
+          "هوا چطوره",
+          "امروز هوا چطوره",
+          "بارون میاد",
+          "هوا چنده",
+          "ابریه امروز",
+          "گرمه امروز",
+          "وضع هوا",
+          "امشب هوا چطوره",
+          "برف میاد",
+          "آفتابیه",
+          "دمای هوا چنده",
+          "سرد هوا امروز"
+        ],
+        "en": [
+          "how is the weather",
+          "will it rain today",
+          "what is the weather like",
+          "is it sunny today",
+          "weather forecast",
+          "whats the weather",
+          "is it raining",
+          "temperature outside",
+          "how hot is it",
+          "is it cold today",
+          "weather today"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "متأسفانه به اینترنت و سرویس‌های هواشناسی دسترسی ندارم؛ از پنجره که نگاه کردی، چه خبره؟",
+          "پیش‌بینی هوا از تخصص‌های من نیست، ولی می‌تونم بگم ساعت چنده تا برنامه‌ریزی کنی!",
+          "دسترسی زنده به هوا ندارم. اگر خودت بگی امروز هوا چطوره، می‌تونم یه توصیه‌ی خوب بدم!",
+          "من آفلاین کار می‌کنم و هوا رو نمی‌بینم؛ ولی چیزهای زیادی دیگه بلدم!"
+        ],
+        "en": [
+          "I can't check live weather — I run offline! But I hope it's lovely out there.",
+          "Weather forecasts need internet access, which I don't have. Is it sunny by you?",
+          "No weather access here, I'm afraid. Anything else I can help with?",
+          "I can't see the sky from inside your device! Try me with math or notes instead."
+        ]
+      }
+    },
+    {
+      "name": "set_name",
+      "patterns": {
+        "fa": [
+          "اسم من علی است",
+          "اسم من سارا هست",
+          "نام من رضا است",
+          "من علی هستم",
+          "صدام کن علی",
+          "به من بگو سارا",
+          "اسمم امیره",
+          "من سارام",
+          "اسم من نیما هست",
+          "اسمت رو من می‌ذارم علی",
+          "اسمم رو بنویس رضا",
+          "من بهنام هستم",
+          "اسم من پارساست",
+          "صدام کن سارا خانم",
+          "من امیرم"
+        ],
+        "en": [
+          "my name is john",
+          "call me sarah",
+          "i am mike",
+          "im david",
+          "name is alex",
+          "i am emma",
+          "my name is sara",
+          "you can call me tony",
+          "i am called john",
+          "people call me mike",
+          "my names sarah",
+          "the name is alex",
+          "im chris"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "خوش‌آمدی {name} جان! از این به بعد اسمت رو یادمه.",
+          "{name}! چه اسم قشنگی. ثبتش کردم.",
+          "لذت آشنایی، {name}! هر سوال داشتی در خدمتم.",
+          "{name} جان! سلام. از این به بعد خصوصی‌تر حرف می‌زنیم!"
+        ],
+        "en": [
+          "Nice to meet you, {name}! I'll remember that.",
+          "{name} — got it! How can I help you today?",
+          "Pleasure to meet you, {name}!",
+          "Welcome, {name}! I won't forget your name."
+        ]
+      }
+    },
+    {
+      "name": "get_name",
+      "patterns": {
+        "fa": [
+          "اسم من چیه",
+          "منو می‌شناسی",
+          "اسمم چی بود",
+          "میدونی اسمم چیه",
+          "اسم منو یادته",
+          "اسمم چی شده",
+          "یادته من کی هستم",
+          "منو می‌شناسی هنوز",
+          "اسم من در کدام حافظه است",
+          "اسم منو بلدی"
+        ],
+        "en": [
+          "what is my name",
+          "do you know my name",
+          "do you remember me",
+          "who am i",
+          "do you remember my name",
+          "whats my name again",
+          "do you remember who i am",
+          "know my name",
+          "can you recall my name",
+          "say my name"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "اسمت {name} است! یادم نرفته.",
+          "تو {name} هستی؛ البته که یادمونه!",
+          "چرا که نه! تو {name} هستی."
+        ],
+        "en": [
+          "Your name is {name}! I remember.",
+          "Of course — you're {name}!",
+          "You are {name}, my favorite user!"
+        ]
+      },
+      "fallback": {
+        "fa": [
+          "هنوز اسمت رو بهم نگفتی! بگو «اسم من ... است» تا همیشه یادم بمونه.",
+          "نمی‌دونم! اسمت رو بگو تا ثبتش کنم."
+        ],
+        "en": [
+          "You haven't told me yet! Say my name is ... and I'll remember it.",
+          "I don't know it yet — what's your name?"
+        ]
+      }
+    },
+    {
+      "name": "language_switch",
+      "patterns": {
+        "fa": [
+          "انگلیسی حرف بزن",
+          "به انگلیسی جواب بده",
+          "زبان رو عوض کن",
+          "فارسی حرف بزن",
+          "فارسی صحبت کن",
+          "به فارسی جواب بده",
+          "زبانت رو عوض کن",
+          "حرف بزن انگلیسی",
+          "با انگلیسی جواب بده",
+          "فارسی گپ بزن",
+          "زبان فارسی کن",
+          "english حرف بزن"
+        ],
+        "en": [
+          "speak english",
+          "speak persian",
+          "talk in persian",
+          "answer in farsi",
+          "switch language",
+          "speak farsi",
+          "change language",
+          "answer in english",
+          "please speak english",
+          "can you talk in english",
+          "respond in farsi",
+          "reply in persian",
+          "lets talk english"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "باشه! از این به بعد فارسی حرف می‌زنیم.",
+          "انجام شد! زبان روی فارسی تنظیم شد.",
+          "بسیار خوب! فارسی آماده‌ی خدمت."
+        ],
+        "en": [
+          "Done! Switching to English from now on.",
+          "Sure! English it is.",
+          "Alright, let's continue in English!"
+        ]
+      }
+    },
+    {
+      "name": "notes_add",
+      "patterns": {
+        "fa": [
+          "یک یادداشت ثبت کن",
+          "یادداشت کن که",
+          "به یادداشت‌هام اضافه کن",
+          "این رو یادداشت کن",
+          "یادداشت جدید بساز",
+          "برام یادداشت بنویس",
+          "یادداشت کن",
+          "یادداشت کن بروم بانک",
+          "یادداشت جدید: خرید نان",
+          "این یادداشت کن که کلاس ۸ است",
+          "برام بنویس یادداشت",
+          "یک نوت ثبت کن",
+          "ذخیره کن یادداشت"
+        ],
+        "en": [
+          "add a note",
+          "take a note",
+          "make a note",
+          "write a note",
+          "remember this note",
+          "new note",
+          "note down",
+          "save a note for me",
+          "note this down please",
+          "i want to add a note",
+          "make a note about the meeting",
+          "write down my note",
+          "keep a note"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "ثبت شد! یادداشتت محفوظه.",
+          "انجام شد! هر وقت خواستی بگو «یادداشت‌هام رو نشون بده».",
+          "یادداشت اضافه شد! چیز دیگه‌ای هم بنویسم؟"
+        ],
+        "en": [
+          "Done! Your note is saved.",
+          "Noted! Say show my notes any time to see them.",
+          "Note added! Anything else to write down?"
+        ]
+      },
+      "fallback": {
+        "fa": [
+          "چی رو یادداشت کنم؟ بنویس و من ثبتش می‌کنم.",
+          "حتما! متن یادداشت رو بفرست."
+        ],
+        "en": [
+          "What should I write down? Just type it and I'll save it.",
+          "Sure! Send me the note text."
+        ]
+      }
+    },
+    {
+      "name": "notes_list",
+      "patterns": {
+        "fa": [
+          "یادداشت‌هام رو نشون بده",
+          "لیست یادداشت‌ها",
+          "یادداشت‌ها چیا هستن",
+          "یادداشت‌هام چیه",
+          "یادداشت‌ها رو بخون",
+          "نمایش یادداشت‌ها",
+          "یادداشت‌های من",
+          "چیا یادداشت کردم",
+          "لیست نوت‌ها",
+          "نشان بده یادداشت‌ها را",
+          "چیا یادداشت کردم",
+          "چه یادداشت‌هایی دارم"
+        ],
+        "en": [
+          "show my notes",
+          "list my notes",
+          "what are my notes",
+          "read my notes",
+          "my notes please",
+          "see my notes",
+          "view my notes",
+          "open my notes",
+          "what notes do i have",
+          "list all notes",
+          "what did i note down",
+          "what have i noted"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "این هم لیست یادداشت‌هات:"
+        ],
+        "en": [
+          "Here are your notes:"
+        ]
+      },
+      "fallback": {
+        "fa": [
+          "فعلا هیچ یادداشتی نداری! بگو «یادداشت کن که ...» تا ثبتش کنم.",
+          "لیستت خالیه! یک یادداشت جدید بسازیم؟"
+        ],
+        "en": [
+          "You have no notes yet! Say add a note ... and I'll save one.",
+          "Your list is empty! Want to create your first note?"
+        ]
+      }
+    },
+    {
+      "name": "notes_clear",
+      "patterns": {
+        "fa": [
+          "یادداشت‌هام رو پاک کن",
+          "همه‌ی یادداشت‌ها رو حذف کن",
+          "یادداشت‌ها رو خالی کن",
+          "یادداشت‌ها رو پاک کن",
+          "پاک کردن یادداشت‌ها",
+          "یادداشت‌ها را حذف کن",
+          "لیست را خالی کن",
+          "همه نوت‌ها پاک شه",
+          "حذف کن همه یادداشت‌ها را",
+          "لیست یادداشت رو پاک کن"
+        ],
+        "en": [
+          "clear my notes",
+          "delete my notes",
+          "delete all notes",
+          "empty my notes",
+          "remove my notes",
+          "wipe my notes",
+          "clear all notes",
+          "delete the note list",
+          "remove all notes",
+          "wipe the note list",
+          "delete the notes please"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "همه‌ی یادداشت‌هات پاک شد! برگه‌ی تازه‌ای داریم.",
+          "لیست یادداشت‌ها خالی شد!"
+        ],
+        "en": [
+          "All your notes are cleared! Fresh start.",
+          "Done — your note list is empty now."
+        ]
+      },
+      "fallback": {
+        "fa": [
+          "فعلا یادداشتی برای پاک کردن نیست!"
+        ],
+        "en": [
+          "There are no notes to clear!"
+        ]
+      }
+    },
+    {
+      "name": "time_date",
+      "patterns": {
+        "fa": [
+          "ساعت چنده",
+          "ساعت چند است",
+          "الان ساعت چنده",
+          "امروز چندمه",
+          "تاریخ امروز چیه",
+          "امروز چه روزیه",
+          "چندمه",
+          "تاریخ چنده",
+          "وقت چنده",
+          "الان چند شد",
+          "ساعت رسمی چنده",
+          "تاریخ میلادی امروز",
+          "امروز چندشنبه‌ست",
+          "فلان روز چنده",
+          "زمان الان"
+        ],
+        "en": [
+          "what time is it",
+          "what is the time",
+          "tell me the time",
+          "what is the date",
+          "what day is it today",
+          "whats todays date",
+          "current time",
+          "time please",
+          "the time now",
+          "time check",
+          "whats the date today",
+          "which day is it",
+          "tell me today",
+          "current date please"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "الان {time} است.",
+          "ساعت {time} است.",
+          "{time} — به وقت دستگاه تو!"
+        ],
+        "en": [
+          "It's {time} right now.",
+          "The time is {time}.",
+          "{time} — according to your device clock!"
+        ]
+      }
+    },
+    {
+      "name": "math",
+      "patterns": {
+        "fa": [
+          "حاصل ۲ به علاوه ۳ چقدر میشه",
+          "جمع ۴ و ۵ چنده",
+          "پنج ضربدر شش",
+          "۱۰ تقسیم بر ۲ چنده",
+          "دو به توان سه",
+          "حاصل ۱۲×۱۱ رو بگو",
+          "حساب کن ۷+۸",
+          "۲ ضربدر ۳ میشه چند",
+          "۸+۲ چیه",
+          "۵۰ منهای ۱۷",
+          "۹ در ۹",
+          "۸۱ تقسیم بر ۹ میشه",
+          "دو بتوان ده",
+          "جمع کن ۳ و ۴ رو",
+          "۲۵ درصد ۲۰۰"
+        ],
+        "en": [
+          "what is 5 plus 3",
+          "five times six",
+          "calculate 12*11",
+          "10 divided by 2",
+          "what is 2 to the power of 3",
+          "add 7 and 8",
+          "how much is 99-11",
+          "whats 6*7",
+          "9*9",
+          "50-17",
+          "2^10",
+          "81/9",
+          "9 times 9",
+          "subtract 17 from 50",
+          "whats 8+2"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "نتیجه: {result}",
+          "حاصل می‌شه {result}!",
+          "جواب {result} است. سوال بعدی!"
+        ],
+        "en": [
+          "The result is {result}.",
+          "That would be {result}!",
+          "Answer: {result}. Next question!"
+        ]
+      },
+      "fallback": {
+        "fa": [
+          "یک عبارت ریاضی بده؛ مثلا ۱۲×(۳+۴) یا «۸ تقسیم بر ۲».",
+          "نتونستم محاسبه کنم! شکل دیگه‌ای بنویس: ۷+۵ مثل این."
+        ],
+        "en": [
+          "Give me a math expression, like 12*(3+4) or 8/2.",
+          "I couldn't parse that! Try a form like 7+5."
+        ]
+      }
+    },
+    {
+      "name": "random",
+      "patterns": {
+        "fa": [
+          "یک عدد شانسی بگو",
+          "عدد تصادفی بگو",
+          "تاس بنداز",
+          "شیر یا خط",
+          "سکه بنداز",
+          "شانسی انتخاب کن",
+          "عدد شانسی بین ۱ و ۱۰۰",
+          "یه عدد تصادفی بین ۱ تا ۶",
+          "شانسم رو امتحان کن",
+          "تاس بریز",
+          "سکه رو بنداز",
+          "یه انتخاب شانسی بکن"
+        ],
+        "en": [
+          "give me a random number",
+          "random number between 1 and 100",
+          "roll a dice",
+          "flip a coin",
+          "heads or tails",
+          "pick a random one",
+          "random number",
+          "randomize a number",
+          "give me luck",
+          "roll dice",
+          "toss a coin",
+          "choose randomly"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "این هم عدد شانسی: {result}",
+          "شانس این‌بار گفت: {result}",
+          "عدد تو: {result}"
+        ],
+        "en": [
+          "Your random number: {result}",
+          "Luck says: {result}",
+          "Here you go: {result}"
+        ]
+      }
+    },
+    {
+      "name": "run_command",
+      "patterns": {
+        "fa": [
+          "اجرا کن ls",
+          "دستور pwd رو اجرا کن",
+          "اجرا کن uname",
+          "برام ls رو اجرا کن",
+          "اجرا کن whoami",
+          "فرمان ls را اجرا کن",
+          "اجرا بکن whoami",
+          "pwd بزن",
+          "دستور date را بزن"
+        ],
+        "en": [
+          "run ls",
+          "execute uname",
+          "run the command pwd",
+          "run whoami",
+          "execute date",
+          "run command ls",
+          "execute pwd for me",
+          "launch uname",
+          "try running date"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "خروجی دستور:"
+        ],
+        "en": [
+          "Command output:"
+        ]
+      },
+      "fallback": {
+        "fa": [
+          "این دستور در لیست امن من نیست! فقط این‌ها مجازه: {allowed}",
+          "اجازه‌ی اجرای این دستور رو ندارم. دستورهای مجاز: {allowed}"
+        ],
+        "en": [
+          "That command is not on my safe list! Allowed: {allowed}",
+          "I can't run that one. Allowed commands: {allowed}"
+        ]
+      }
+    },
+    {
+      "name": "affirmation",
+      "patterns": {
+        "fa": [
+          "بله",
+          "آره",
+          "باشه",
+          "اوکی",
+          "حتما",
+          "چشم",
+          "آره بگو",
+          "اکی",
+          "آره لطفا",
+          "باشه حتما",
+          "ایول",
+          "صددرصد",
+          "قبوله",
+          "اوکیه"
+        ],
+        "en": [
+          "yes",
+          "yeah",
+          "ok",
+          "okay",
+          "sure",
+          "of course",
+          "alright",
+          "yep",
+          "yes please",
+          "sounds good",
+          "sounds great",
+          "definitely",
+          "for sure",
+          "thats fine"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "باشه! پس ادامه می‌دیم.",
+          "عالی! بگو چی لازم داری.",
+          "خیلی خوب! منتظر سوال بعدی‌ام.",
+          "چشم! در خدمتم."
+        ],
+        "en": [
+          "Great! What's next?",
+          "Perfect! Let me know what you need.",
+          "Awesome! I'm ready for the next thing.",
+          "Cool! I'm all ears."
+        ]
+      }
+    },
+    {
+      "name": "negation",
+      "patterns": {
+        "fa": [
+          "نه",
+          "نه ممنون",
+          "نمی‌خوام",
+          "بی‌خیال",
+          "نه دیگه",
+          "خیر",
+          "نِی",
+          "نه مرسی",
+          "فعلا نه",
+          "لازم ندارم",
+          "ولش کن",
+          "صرف نظر می‌کنم"
+        ],
+        "en": [
+          "no",
+          "no thanks",
+          "not now",
+          "never mind",
+          "nah",
+          "nope",
+          "no thank you",
+          "i dont want it",
+          "skip it",
+          "not interested",
+          "forget it"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "مشکلی نیست! هر وقت چیزی خواستی من همین‌جام.",
+          "باشه، به‌هرحال اگر نظرت عوض شد بگو!",
+          "خوبه! پس یه چیز دیگه بپرس؛ مثلا بگو چه کارهایی بلدم.",
+          "قربان! هر وقت آماده بودی بگو."
+        ],
+        "en": [
+          "No problem! I'm here whenever you need me.",
+          "Alright! Just say the word if you change your mind.",
+          "Sure thing. Is there anything else I can do?",
+          "Okay! Ask me something fun instead — like a joke."
+        ]
+      }
+    },
+    {
+      "name": "more",
+      "patterns": {
+        "fa": [
+          "باز هم",
+          "ادامه بده",
+          "یکی دیگه",
+          "بازم بگو",
+          "دوباره بگو",
+          "بازش کن",
+          "بازم",
+          "بازم بگو ببینم",
+          "یکی دیگه بگو",
+          "ادامه بده ببینم",
+          "باز کن",
+          "قدش بده"
+        ],
+        "en": [
+          "more",
+          "again",
+          "another one",
+          "say it again",
+          "go on",
+          "continue",
+          "one more",
+          "more please",
+          "another one please",
+          "give me more",
+          "keep going",
+          "again please"
+        ]
+      },
+      "responses": {
+        "fa": [
+          "باشه! بفرما:",
+          "بفرما، این هم یکی دیگه!",
+          "ادامه می‌دیم!"
+        ],
+        "en": [
+          "Sure! Here you go:",
+          "Alright, here's more!",
+          "Continuing!"
+        ]
+      }
+    }
+  ],
+  "fallback_responses": {
+    "fa": [
+      "متوجه سوالت نشدم؛ می‌تونی ساده‌تر بپرسی؟ مثلا بپرس «ساعت چنده» یا بنویس «۱۲×۷».",
+      "این یکی از من خواسته‌ی زیادی بود! یک راه دیگه بپرس یا بگو «چه کارهایی بلدی».",
+      "هنوز همه‌چیز رو بلد نیستم، ولی تلاش می‌کنم! یک سوال عمومی دیگه داری؟",
+      "این رو نگرفتم! ولی ریاضی، ساعت، تاریخ و یادداشت رو خوب بلدم؛ امتحان کن."
+    ],
+    "en": [
+      "I didn't quite catch that. Try asking something like what time is it, or write 12*7.",
+      "That one's beyond me for now! Ask me another way, or say what can you do.",
+      "I'm still learning that topic. Want to try a general question?",
+      "I didn't get that — but I'm great at math, time, date and notes. Try me!"
+    ]
+  }
+}

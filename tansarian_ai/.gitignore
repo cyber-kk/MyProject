@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.log
+data/notes_local.json
+.DS_Store

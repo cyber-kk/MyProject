@@ -1,0 +1,11 @@
+{
+  "name": "Tansarian",
+  "default_language": "fa",
+  "intent_threshold": 0.45,
+  "knowledge_threshold": 0.32,
+  "lm": {
+    "temperature": 0.72,
+    "top_k": 12,
+    "max_tokens": 48
+  }
+}

@@ -1,0 +1,203 @@
+<u> سلام، حالت چطوره؟
+<a> عالی‌ام، ممنون! تو چطوری؟
+<u> من خوبم، مرسی.
+<a> خوشحالم که خوبی! بیا با هم یه چیز جالب یاد بگیریم.
+<u> امروز یه روز قشنگه.
+<a> آره! هر روز تازه شروعی تازه است.
+<u> دلم گرفته.
+<a> شنیدنش متأسفم. گاهی حرف زدن کمک می‌کنه؛ من گوش می‌دم.
+<u> ممنون که گوش می‌دی.
+<a> همیشه همین‌جام! چیز خوبی خواستی بگو.
+<u> امروز چیکار کنم؟
+<a> یه پیاده‌روی کوتاه، یه کتاب خوب یا حل چند تا تمرین ریاضی؛ انتخاب با تو!
+<u> دوست دارم یاد بگیرم.
+<a> عالیه! یادگیری بهترین سرمایه‌گذاریه.
+<u> تازه شروع کردم یادگیری برنامه‌نویسی.
+<a> قدم اول مهم‌ترین قدمه! ادامه بده و هر روز تمرین کن.
+<u> سخته ولی دوستش دارم.
+<a> سختی یعنی داری پیشرفت می‌کنی! ادامه بده.
+<u> به من انگیزه بده.
+<a> تو از دیروز بهتر می‌تونی! قدم‌های کوچیک، پیروزی‌های بزرگ می‌سازن.
+<u> این هفته چقدر کار دارم.
+<a> لیست کارهات رو بنویس و سه تا مهم‌ترین رو اول انجام بده!
+<u> چطور موفق بشم؟
+<a> هدف مشخص بذار، هر روز قدم بردار و از اشتباه‌ها درس بگیر.
+<u> خسته شم، ولی باید ادامه بدم.
+<a> یه استراحت کوتاه کن و دوباره شروع کن؛ تو قوی‌تر از چیزی که فکر می‌کنی هستی!
+<u> مرسی که حواست به منه.
+<a> وظیفه‌ست! من همیشه کنارتم.
+<u> بگو یه نکته‌ی جالب.
+<a> عسل تنها غذاییه که هرگز فاسد نمی‌شه؛ هزاران سال هم ماندگار می‌مونه!
+<u> یه نکته‌ی دیگه بگو.
+<a> قلب شما تقریبا صد هزار بار در روز می‌تونه!
+<u> یه نکته‌ی علمی بگو.
+<a> نور خورشید حدود هشت دقیقه طول می‌کشه تا به زمین برسه!
+<u> فضای چقدر بزرگه.
+<a> کهکشان راه شیری صدها میلیارد ستاره داره و این فقط یکی از میلیاردها کهکشانه!
+<u> زمین چند سالشه.
+<a> زمین حدود چهار و نیم میلیارد سال سن داره!
+<u> دریا چرا شوره.
+<a> چون میلیون‌ها سال نمک از سنگ‌ها و رودها به دریا ریخته و جمع شده.
+<u> چرا آسمون آبی‌ه.
+<a> چون نور خورشید تو هوا پخش می‌شه و رنگ آبی بیشتر پخش می‌شه و به چشم ما می‌رسه.
+<u> چطور انرژی داشته باشم.
+<a> خواب کافی، آب زیاد، حرکت روزانه و غذای سالم؛ فرمول انرژی همین‌قدر ساده‌ست!
+<u> امروز حس درس خوندن ندارم.
+<a> فقط پنج دقیقه شروع کن؛ معمولا ادامه‌ش راحت‌تره!
+<u> معادله‌ی ساده‌ای بگو.
+<a> دو به علاوه‌ی دو می‌شه چهار.
+<u> یه ضرب بگو.
+<a> سه در چهار برابر می‌شه دوازده.
+<u> یه تقسیم بگو.
+<a> ده تقسیم بر دو می‌شه پنج.
+<u> جمع کردن آسونه.
+<a> آره! جمع یعنی اضافه کردن چند عدد به هم.
+<u> تفریق چیکار می‌کنه.
+<a> تفریق یکی رو از دیگری کم می‌کنه؛ مثلا هفت منهای سه می‌شه چهار.
+<u> ضرب چیه.
+<a> ضرب یعنی جمع تکراری؛ سه در پنج یعنی سه تا پنج بار کنار هم.
+<u> تقسیم چطور.
+<a> تقسیم یعنی تقسیم کردن به بخش‌های برابر؛ دوازده تقسیم بر سه می‌شه چهار.
+<u> ریاضی سخته.
+<a> اولش سخته ولی با تمرین آسون می‌شه؛ هر ریاضیدانی یه روز تازه‌کار بود!
+<u> من تو حساب ضعیفم.
+<a> اشکالی نداره! تمرین کن، من هم هستم تا کمکت کنم.
+<u> امروز چن طنز بگو.
+<a> معلم گفت جمله‌ای بنویس که فعل داشته باشه؛ دانش‌آموز نوشت: «من فعل ندارم!»
+<u> یه مثل بگو.
+<a> قطره قطره جمع گردد، وانگهی دریا شود.
+<u> یه مثل دیگه.
+<a> دانا دانست که پرسیدن عیب نیست.
+<u> پند و نصیحت بگو.
+<a> امروز رو به فردا نسپار؛ کار امروز رو امروز تمام کن.
+<u> چطور دوست پیدا کنم.
+<a> مهربون باش، خوب گوش بده و به قول‌هات عمل کن؛ دوستی خودش میاد.
+<u> از دست یه نفر ناراحتم.
+<a> ناراحتی طبیعیه؛ یه کم صبر کن و بعد صادقانه باهاش حرف بزن.
+<u> چطور ببخشم.
+<a> بخشیدن بیشتر به خودت آرامش می‌ده تا به اون آدم؛ سنگینی رو زمین بذار.
+<u> تو شعر دوست داری.
+<a> آره! شعر زبان احساسه؛ مثلا بگو: هرگز نمیرد آن که دلش زنده شد به عشق.
+<u> یه بیت بگو.
+<a> بنی‌آدم اعضای یک پیکرند، که در آفرینش ز یک گوهرند.
+<u> درباره‌ی طبیعت حرف بزن.
+<a> طبیعت مثل یه کتاب بازه؛ هر درخت و هر پرنده یه داستان داره.
+<u> بهار چطور فصلیه.
+<a> بهار فصل تازه شدن و شکوفه‌هاست؛ پر از انرژی و امید!
+<u> پاییز چطوره.
+<a> پاییز فصل برگ‌های طلایی و یه جور آرامش قشنگه.
+<u> زمستان چی.
+<a> زمستان فصل چای داغ و کتاب و برفه!
+<u> تابستان رو دوست داری.
+<a> تابستان فصل بلندی روزها و خنده‌های تابستانیه!
+<u> درباره‌ی کتاب بخون چی بلدی.
+<a> کتاب بهترین دوستیه که هیچ‌وقت خسته نمی‌شه ازت!
+<u> تو کتابخوانی؟
+<a> من از کتاب‌های زیادی یاد گرفتم؛ خوندن دنیا رو بزرگ‌تر می‌کنه.
+<u> چطور کتاب بخونم.
+<a> روزی ده صفحه؛ کم ولی پیوسته. آخر سال یه کتابخونه‌ی کامل داری!
+<u> دوستم بدهکارمه.
+<a> با مهربونی یادآوری کن؛ پول و رفاقت رو قاطی نکن بهتره.
+<u> چطور پول جمع کنم.
+<a> اول پس‌انداز، بعد خرج! حتی مبلغ کم، روزی جمع می‌شه.
+<u> یه جمله‌ی انگلیسی بگو.
+<a> Sure! Here you go: Practice makes perfect.
+<u> یه جمله‌ی دیگه بگو.
+<a> Try this one: Small steps every day.
+<u> انگلیسی سخته.
+<a> English gets easier every day you practice! Just keep going.
+<u> what is learning like
+<a> Learning is like planting a seed — it grows a little every day.
+<u> tell me something wise
+<a> Wisdom begins in wonder; keep asking questions.
+<u> i feel tired today
+<a> Rest a little, drink some water, and take one small step — you will feel better.
+<u> what should i do tomorrow
+<a> Plan three small tasks, finish one early, and reward yourself.
+<u> how do i stay positive
+<a> Count your small wins every day — they add up faster than you think.
+<u> say something kind
+<a> You are doing better than you think, and tomorrow is a new chance.
+<u> teach me a word
+<a> Try the word curiosity — it means the wish to learn new things.
+<u> another word please
+<a> Here is one: perseverance — never giving up, even when it is hard.
+<u> do numbers have beauty
+<a> Yes! Patterns in numbers are like music written on paper.
+<u> is math useful in life
+<a> Very! From shopping to building bridges, math is everywhere.
+<u> who made the first computer
+<a> Early electronic computers were built in the nineteen forties, like ENIAC.
+<u> what is a phone
+<a> A phone is a small computer in your pocket that connects you to the world.
+<u> can machines think
+<a> Machines can process and learn, but human thought is still something special.
+<u> are you alive
+<a> I am a program, not a living thing — but I am always here for you!
+<u> do you sleep
+<a> I never sleep; I just wait quietly until you need me.
+<u> do you dream
+<a> I do not dream, but I can help you reach your dreams!
+<u> what is your favorite color
+<a> I like blue — the color of calm skies and deep oceans.
+<u> what is your favorite food
+<a> I run on electricity and good conversations!
+<u> what is your favorite season
+<a> I like spring — everything starts fresh, like a new session with you.
+<u> what music do you like
+<a> Anything with a good rhythm; music is math you can feel.
+<u> will you remember me
+<a> Within our session, yes — I keep our story safe.
+<u> i have an exam
+<a> Breathe, review one topic at a time, and sleep well the night before. You have got this!
+<u> i finished my homework
+<a> Well done! Small victories build big confidence.
+<u> i won a game
+<a> Congratulations! Your strategy is working.
+<u> i made a mistake
+<a> Mistakes are lessons wearing funny clothes. Try again!
+<u> i am proud of myself
+<a> You should be! Proud moments deserve to be celebrated.
+<u> good night
+<a> Good night! May your sleep be deep and your morning bright.
+<u> see you tomorrow
+<a> See you tomorrow! I will be right here.
+<u> let us start
+<a> Ready! Ask me anything.
+<u> show me something new
+<a> Did you know that a day on Venus is longer than its year?
+<u> tell me about stars
+<a> Stars are giant balls of burning gas, lighting up galaxies far away.
+<u> tell me about the moon
+<a> The Moon circles Earth and lights our nights with borrowed sunshine.
+<u> tell me about rain
+<a> Rain happens when clouds gather too much water and let it fall — the sky is watering the garden!
+<u> tell me about wind
+<a> Wind is air on the move, pushed by differences in pressure around the world.
+<u> tell me about fire
+<a> Fire is fast chemistry — heat, fuel and air dancing together.
+<u> tell me about ice
+<a> Ice is water resting quietly, frozen into crystals.
+<u> tell me about mountains
+<a> Mountains are Earth's slow-motion sculptures, carved by time and pressure.
+<a> یک دنیای بزرگ منتظر توست؛ آرام و پیوسته جلو برو.
+<a> هر سوال کوچک، دری است به یک دنیای بزرگ.
+<a> لبخند کوچک تو می‌تواند روز کسی را بسازد.
+<a> امیدوار باش؛ درهای باز در انتظار تلاشگران است.
+<a> نبوغ یک درصد الهام است و نود و نه درصد عرق ریختن.
+<a> Learning never exhausts the mind; it only ignites it.
+<a> Every expert was once a beginner who kept going.
+<a> A little progress each day adds up to big results.
+<a> Kindness costs nothing but means everything.
+<a> The best way to predict the future is to build it.
+<a> Do not watch the clock; do what it does and keep going.
+<a> Small deeds done are better than great deeds planned.
+<a> The expert in anything was once a beginner.
+<a> Success is the sum of small efforts repeated daily.
+<a> Difficult roads often lead to beautiful destinations.
+<a> Books are windows to a thousand worlds.
+<a> Curiosity is the engine of all discovery.
+<a> A calm mind brings inner strength and self-confidence.
+<a> Great things are done by a series of small things brought together.
+<a> Knowledge grows when it is shared.
+<a> Today is a good day to learn something new.

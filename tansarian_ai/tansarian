@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Tansarian launcher — starts the chat from any directory.
+DIR="$(cd "$(dirname "$0")" && pwd)"
+exec python3 "$DIR/chat.py" "$@"
