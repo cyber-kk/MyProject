@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">PyTans</string>
+    <string name="header_title">PyTans</string>
+    <string name="header_subtitle">Python 3 IDE</string>
+
+    <!-- File buttons -->
+    <string name="btn_new">New</string>
+    <string name="btn_open">Open</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_rename">Rename</string>
+    <string name="btn_delete">Delete</string>
+
+    <!-- Run buttons -->
+    <string name="btn_run">Run</string>
+    <string name="btn_stop">Stop</string>
+    <string name="btn_clear">Clear</string>
+
+    <!-- Editor / output -->
+    <string name="editor_hint">Write your Python code here…</string>
+    <string name="output_hint">Output will appear here when you run your code.</string>
+    <string name="status_idle">idle</string>
+    <string name="status_modified">modified</string>
+    <string name="status_fmt">%1$s  •  %2$d:%3$d  •  %4$s</string>
+    <string name="untitled">untitled.py</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_open_title">Open file (workspace)</string>
+    <string name="dialog_new_title">New Python file</string>
+    <string name="dialog_rename_title">Rename file</string>
+    <string name="dialog_delete_title">Delete file</string>
+    <string name="hint_file_name">filename.py</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Messages -->
+    <string name="msg_saved">Saved</string>
+    <string name="msg_auto_saved">Auto-saved</string>
+    <string name="msg_deleted">File deleted</string>
+    <string name="msg_renamed">File renamed</string>
+    <string name="msg_created">File created</string>
+    <string name="msg_no_file">No file is open</string>
+    <string name="msg_exists">A file with this name already exists</string>
+    <string name="msg_invalid_name">Invalid file name</string>
+    <string name="msg_empty_name">Please enter a file name</string>
+    <string name="msg_python_not_ready">Python is being extracted, please wait…</string>
+    <string name="msg_extracting">Extracting Python runtime…</string>
+    <string name="msg_extract_done">Python %1$s ready (%2$d files)</string>
+    <string name="msg_extract_fail">Python extraction failed: %1$s</string>
+    <string name="msg_process_exit">[Process finished with exit code %1$d in %2$.1fs]</string>
+    <string name="msg_process_killed">[Process stopped]</string>
+    <string name="msg_not_running">No process is running</string>
+    <string name="msg_already_running">A script is already running. Press Stop first.</string>
+    <string name="msg_output_cleared">Output cleared</string>
+    <string name="msg_workspace_empty">No .py files in the workspace yet</string>
+    <string name="msg_save_before_run">Saving changes before run…</string>
+    <string name="msg_open_error">Could not open file: %1$s</string>
+    <string name="msg_save_error">Could not save file: %1$s</string>
+    <string name="msg_run_error">Failed to start Python: %1$s</string>
+    <string name="workspace_label">Workspace</string>
+</resources>

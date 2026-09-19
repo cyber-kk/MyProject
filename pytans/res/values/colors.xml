@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light theme -->
+    <color name="window_bg">#F4F6FB</color>
+    <color name="header_bg">#2D6FE0</color>
+    <color name="header_text">#FFFFFF</color>
+    <color name="header_sub">#D7E4FF</color>
+
+    <color name="editor_bg">#FFFFFF</color>
+    <color name="editor_text">#1B1F2A</color>
+    <color name="line_no_bg">#EDF0F7</color>
+    <color name="line_no">#98A0B3</color>
+    <color name="cursor">#2D6FE0</color>
+
+    <color name="btn_bg">#E7EBF4</color>
+    <color name="btn_text">#1B1F2A</color>
+    <color name="btn_stroke">#CBD2E1</color>
+    <color name="run_bg">#2E9E5B</color>
+    <color name="run_text">#FFFFFF</color>
+    <color name="stop_bg">#D9534F</color>
+    <color name="stop_text">#FFFFFF</color>
+
+    <color name="output_bg">#F0F2F8</color>
+    <color name="output_text">#252A36</color>
+    <color name="output_err">#C0392B</color>
+
+    <color name="dialog_text">#1B1F2A</color>
+    <color name="divider">#D9DEE9</color>
+
+    <!-- Syntax colors (light) -->
+    <color name="syn_default">#1B1F2A</color>
+    <color name="syn_keyword">#7A3FF2</color>
+    <color name="syn_string">#1D8A3F</color>
+    <color name="syn_comment">#8A9099</color>
+    <color name="syn_number">#B85C00</color>
+    <color name="syn_builtin">#0F6FBF</color>
+</resources>
