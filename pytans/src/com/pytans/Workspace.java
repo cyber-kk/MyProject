@@ -1,6 +1,7 @@
 package com.pytans;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,22 +13,45 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * All file I/O for the IDE happens inside the app's private directory:
- * /data/data/com.pytans/files/workspace/
+ * All file I/O for the IDE goes through a Workspace rooted at either
+ *   - the app-private directory: /data/data/com.pytans/files/workspace/
+ *   - the public directory:      /storage/emulated/0/PyTans/   (Problem 2 fix,
+ *     requires storage permission)
  */
 public class Workspace {
 
+    /** Public workspace location (fixed, per spec). */
+    public static final String PUBLIC_PATH = "/storage/emulated/0/PyTans";
+
     private final File dir;
 
-    public Workspace(Context ctx) {
-        dir = new File(ctx.getFilesDir(), "workspace");
+    public Workspace(File dir) {
+        this.dir = dir;
         if (!dir.exists()) {
+            // also create missing parents (e.g. /storage/emulated/0/PyTans)
             dir.mkdirs();
         }
     }
 
+    public static Workspace privateWs(Context ctx) {
+        return new Workspace(new File(ctx.getFilesDir(), "workspace"));
+    }
+
+    public static Workspace publicWs() {
+        return new Workspace(new File(PUBLIC_PATH));
+    }
+
     public File dir() {
         return dir;
+    }
+
+    public String path() {
+        return dir.getAbsolutePath();
+    }
+
+    public boolean canUse() {
+        if (dir.isDirectory()) return true;
+        return dir.mkdirs();
     }
 
     public File file(String name) {
@@ -47,6 +71,20 @@ public class Workspace {
         }
         Collections.sort(out);
         return out;
+    }
+
+    /** Create hello.py sample if the workspace is usable and empty of it. */
+    public boolean ensureSample() {
+        try {
+            if (!canUse()) return false;
+            File hello = new File(dir, "hello.py");
+            if (!hello.exists()) {
+                write(hello, "print(\"Hello from PyTans\")\n");
+            }
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     public static boolean validName(String name) {
@@ -82,6 +120,10 @@ public class Workspace {
     }
 
     public void write(File f, String content) throws IOException {
+        // make sure a freshly switched-to public workspace exists on disk
+        if (!f.getParentFile().isDirectory() && !f.getParentFile().mkdirs()) {
+            throw new IOException("cannot create " + f.getParent());
+        }
         FileOutputStream out = new FileOutputStream(f);
         try {
             out.write(content.getBytes(StandardCharsets.UTF_8));

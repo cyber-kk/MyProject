@@ -2,6 +2,7 @@ package com.pytans;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.system.Os;
@@ -19,29 +20,40 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Manages the bundled (Termux) CPython runtime.
+ * Manages the bundled (Termux) CPython runtime for BOTH arm64-v8a and
+ * armeabi-v7a devices.
+ *
+ * APK asset layout:
+ *   assets/python/arm64-v8a/...     full $PREFIX tree (64-bit ELF only)
+ *   assets/python/armeabi-v7a/...   full $PREFIX tree (32-bit ELF only)
  *
  * Layout on device:
- *   /data/data/com.pytans/files/python/        <- $PREFIX (bin/, lib/, etc/...)
- *   /data/data/com.pytans/files/workspace/     <- user scripts
+ *   /data/data/com.pytans/files/python/        <- $PREFIX for THIS device ABI
+ *   /data/data/com.pytans/files/workspace/     <- user scripts (private ws)
  *   /data/data/com.pytans/files/home/          <- HOME
  *
  * The python launcher binary itself ships as a native library
- * (libpytanspython.so) and is extracted by the package installer into
- * nativeLibraryDir, which is the only reliably executable location for
- * apps targeting SDK >= 29. libpython3.14.so and all other shared
- * libraries live in files/python/lib and are resolved through
- * LD_LIBRARY_PATH at process start.
+ * (libpytanspython.so) in BOTH lib/arm64-v8a/ and lib/armeabi-v7a/ and is
+ * extracted by the package installer into nativeLibraryDir, which is the
+ * only reliably executable location for apps targeting SDK >= 29.
+ * libpython3.14.so and all other shared libraries live in files/python/lib
+ * and are resolved through LD_LIBRARY_PATH at process start.
  */
 public class PythonRuntime {
 
     public static final String PY_VERSION = "3.14.6";
     private static final String MARKER = ".installed";
     private static final String LAUNCHER_LIB = "libpytanspython.so";
+    private static final String ABI_ARM64 = "arm64-v8a";
+    private static final String ABI_ARM32 = "armeabi-v7a";
+
+    /** The ABI of the bundled python tree this app extracts (Problem 1 fix). */
+    public static final String DEVICE_ABI = detectDeviceAbi();
 
     public interface ReadyCallback {
         void onReady(int fileCount);
@@ -50,7 +62,6 @@ public class PythonRuntime {
 
     public interface OutputCallback {
         void onOutput(String chunk, boolean isErr);
-
         void onFinished(int exitCode, long elapsedMs);
     }
 
@@ -64,6 +75,27 @@ public class PythonRuntime {
     public PythonRuntime(Context ctx) {
         this.ctx = ctx.getApplicationContext();
         detectStdlibDir();
+    }
+
+    /**
+     * Pick the bundled ABI matching this device. We ship arm64-v8a and
+     * armeabi-v7a only; choose the FIRST supported ABI we have a tree for,
+     * preferring 64-bit when the device supports both.
+     */
+    private static String detectDeviceAbi() {
+        try {
+            String[] abis = Build.SUPPORTED_ABIS;
+            if (abis != null) {
+                for (String abi : abis) {
+                    if (ABI_ARM64.equals(abi)) return ABI_ARM64;
+                }
+                for (String abi : abis) {
+                    if (ABI_ARM32.equals(abi) || "armeabi".equals(abi)) return ABI_ARM32;
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        return ABI_ARM32;
     }
 
     public File pythonDir() {
@@ -82,8 +114,9 @@ public class PythonRuntime {
         File marker = new File(pythonDir(), MARKER);
         if (!marker.exists()) return false;
         try {
-            String v = readSmallFile(marker);
-            return PY_VERSION.equals(v.trim());
+            // marker format: "<version>:<abi>" (older installs: version only)
+            String v = readSmallFile(marker).trim();
+            return v.equals(PY_VERSION + ":" + DEVICE_ABI);
         } catch (IOException e) {
             return false;
         }
@@ -97,7 +130,7 @@ public class PythonRuntime {
         return running ? (System.currentTimeMillis() - startMs) / 1000.0 : 0.0;
     }
 
-    /** Extract bundled Python on first launch (idempotent, background thread). */
+    /** Extract bundled Python for this ABI on first launch (background thread). */
     public synchronized void ensureInstalled(final ReadyCallback cb) {
         if (isReady()) {
             cb.onReady(-1);
@@ -107,7 +140,7 @@ public class PythonRuntime {
             @Override
             public void run() {
                 try {
-                    int count = extractAll();
+                    final int count = extractAll();
                     main.post(new Runnable() {
                         @Override
                         public void run() {
@@ -131,7 +164,13 @@ public class PythonRuntime {
         File pyRoot = pythonDir();
         pyRoot.mkdirs();
         int[] counter = new int[]{0};
-        copyAssetDir(am, "python", pyRoot, counter);
+        // Per-ABI asset root: assets/python/<device-abi>/ (Problem 1 fix)
+        String assetRoot = "python/" + DEVICE_ABI;
+        String[] probe = am.list(assetRoot);
+        if (probe == null || probe.length == 0) {
+            throw new IOException("no bundled python assets for ABI " + DEVICE_ABI);
+        }
+        copyAssetDir(am, assetRoot, pyRoot, counter);
         applyPermissions(pyRoot);
 
         File ws = workspaceDir();
@@ -146,7 +185,7 @@ public class PythonRuntime {
         }
         try {
             writePrivate(new FileOutputStream(new File(pyRoot, MARKER)),
-                    PY_VERSION + "\n");
+                    PY_VERSION + ":" + DEVICE_ABI + "\n");
         } catch (IOException e) {
             throw new IOException("cannot write install marker: " + e.getMessage());
         }
@@ -212,8 +251,7 @@ public class PythonRuntime {
                 String p = f.getAbsolutePath();
                 String rel = p.substring(rootPath.length() + 1);
                 boolean exec = rel.startsWith("bin/")
-                        || rel.startsWith("lib/")
-                        || rel.startsWith("usr/bin/");
+                        || rel.startsWith("lib/");
                 try {
                     Os.chmod(p, exec ? EXEC_MODE : FILE_MODE);
                 } catch (Throwable ignored) { }
@@ -236,7 +274,17 @@ public class PythonRuntime {
         }
     }
 
-    /** Run a script with the bundled interpreter. Blocking setup, streams on threads. */
+    /**
+     * Run a script with the bundled interpreter.
+     *
+     * Problem 3 fix:
+     *  - python is started with -u and PYTHONUNBUFFERED=1 (unbuffered stdout)
+     *  - stdout and stderr are consumed LINE BY LINE on two separate threads
+     *    that are actually STARTED (the old code created but never started
+     *    them, so print() output was never shown)
+     *  - the process is waited for, then both stream threads are joined, and
+     *    only then the exit callback fires exactly once
+     */
     public synchronized void run(final File script, final OutputCallback cb) throws IOException {
         if (running) {
             throw new IOException("already running");
@@ -247,10 +295,16 @@ public class PythonRuntime {
 
         List<String> cmd = new ArrayList<String>();
         cmd.add(new File(nativeDir, LAUNCHER_LIB).getAbsolutePath());
+        cmd.add("-u"); // unbuffered stdout/stderr
         cmd.add(script.getAbsolutePath());
 
         ProcessBuilder pb = new ProcessBuilder(cmd);
-        pb.directory(workspaceDir());
+        File scriptParent = script.getParentFile();
+        if (scriptParent != null && scriptParent.isDirectory()) {
+            pb.directory(scriptParent);
+        } else {
+            pb.directory(workspaceDir());
+        }
 
         Map<String, String> env = pb.environment();
         env.put("PYTHONHOME", prefix);
@@ -271,44 +325,59 @@ public class PythonRuntime {
         running = true;
         startMs = System.currentTimeMillis();
         final Process p = proc;
+        final long runStart = startMs;
 
-        Thread outT = pump(p.getInputStream(), false, cb);
-        Thread errT = pump(p.getErrorStream(), true, cb);
+        final AtomicBoolean finishedOnce = new AtomicBoolean(false);
 
-        new Thread(new Runnable() {
+        // Line-by-line pump threads (started below!)
+        final Thread outT = pumpLines(p.getInputStream(), false, cb);
+        final Thread errT = pumpLines(p.getErrorStream(), true, cb);
+
+        Thread waitT = new Thread(new Runnable() {
             @Override
             public void run() {
                 int code = -1;
                 try {
                     code = p.waitFor();
-                } catch (InterruptedException ignored) { }
-                running = false;
-                proc = null;
-                cb.onFinished(code, System.currentTimeMillis() - startMs);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                // Join stream pumps BEFORE the exit line so that all
+                // stdout/stderr lines appear first, exit line last.
+                try { outT.join(5000); } catch (InterruptedException ignored) { }
+                try { errT.join(5000); } catch (InterruptedException ignored) { }
+                if (finishedOnce.compareAndSet(false, true)) {
+                    running = false;
+                    proc = null;
+                    cb.onFinished(code, System.currentTimeMillis() - runStart);
+                }
             }
-        }, "pytans-wait").start();
+        }, "pytans-wait");
+        outT.start();
+        errT.start();
+        waitT.start();
     }
 
-    private Thread pump(final InputStream stream, final boolean isErr, final OutputCallback cb) {
-        Thread t = new Thread(new Runnable() {
+    /** Read the given stream line-by-line, appending each line immediately. */
+    private Thread pumpLines(final InputStream stream, final boolean isErr, final OutputCallback cb) {
+        return new Thread(new Runnable() {
             @Override
             public void run() {
                 BufferedReader r = new BufferedReader(
-                        new InputStreamReader(new BufferedInputStream(stream), StandardCharsets.UTF_8), 8192);
+                        new InputStreamReader(new BufferedInputStream(stream), StandardCharsets.UTF_8),
+                        8192);
                 try {
-                    char[] buf = new char[2048];
-                    int n;
-                    while ((n = r.read(buf)) > 0) {
-                        String chunk = new String(buf, 0, n).replaceAll("\\r\\n?", "\n");
-                        cb.onOutput(chunk, isErr);
+                    String line;
+                    while ((line = r.readLine()) != null) {
+                        cb.onOutput(line + "\n", isErr);
                     }
                 } catch (IOException ignored) {
+                    // stream closed (process killed or ended) — stop pumping
                 } finally {
                     try { r.close(); } catch (IOException ignored) { }
                 }
             }
-        });
-        return t;
+        }, isErr ? "pytans-pump-err" : "pytans-pump-out");
     }
 
     /** Kill the running python process (Stop button). */

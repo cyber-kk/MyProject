@@ -1,12 +1,19 @@
 package com.pytans;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -15,6 +22,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -52,7 +61,15 @@ public class MainActivity extends Activity {
     private final ExecutorService ioPool = Executors.newFixedThreadPool(2);
     private final StringBuilder outBuf = new StringBuilder();
 
-    private Workspace workspace;
+    private Workspace wsPrivate;   // /data/data/com.pytans/files/workspace
+    private Workspace wsPublic;    // /storage/emulated/0/PyTans
+    private Workspace workspace;   // currently selected one
+    private CheckBox wsPublicToggle;
+    private boolean usePublicWs = false;
+
+    private static final int REQ_LEGACY_STORAGE = 41;
+    private static final int REQ_ALL_FILES = 42;
+
     private PythonRuntime runtime;
     private final UndoStack undoStack = new UndoStack();
 
@@ -86,8 +103,11 @@ public class MainActivity extends Activity {
             resolveColors();
             setupEditor();
             setupButtons();
+            setupWorkspaceToggle();
 
-            workspace = new Workspace(this);
+            wsPrivate = Workspace.privateWs(this);
+            wsPublic = Workspace.publicWs();
+            workspace = wsPrivate;
             runtime = new PythonRuntime(this);
 
             outputView.setText(getString(R.string.msg_extracting));
@@ -112,8 +132,257 @@ public class MainActivity extends Activity {
 
             startAutoSave();
             updateStatus();
+
+            // Problem 2 fix: on first launch request READ/WRITE at runtime;
+            // on Android 11+ the grant callback routes to the
+            // "All files access" screen.
+            requestStorageIfNeeded();
         } catch (Throwable t) {
             showFatal(t);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            // Re-check permission state every resume; the file browser works
+            // on the public workspace as soon as access is granted.
+            refreshStorageState();
+            if (storageOk()) {
+                afterStorageReady();
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
+    // ------------------------------------------------------- storage perms
+
+    /** Legacy READ/WRITE runtime permissions (gate below Android 11). */
+    private boolean hasLegacyStorage() {
+        if (Build.VERSION.SDK_INT < 23) return true; // install-time grant
+        try {
+            return checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    /** "All files access" gate (Android 11+). */
+    private boolean hasAllFiles() {
+        if (Build.VERSION.SDK_INT >= 30) {
+            try {
+                return Environment.isExternalStorageManager();
+            } catch (Throwable t) {
+                return false;
+            }
+        }
+        return hasLegacyStorage();
+    }
+
+    /** True when the public workspace /storage/emulated/0/PyTans is usable. */
+    private boolean storageOk() {
+        return hasAllFiles();
+    }
+
+    /** Request READ/WRITE at runtime (first launch). */
+    private void requestStorageIfNeeded() {
+        try {
+            if (Build.VERSION.SDK_INT >= 30) {
+                if (!Environment.isExternalStorageManager()) {
+                    requestPermissions(new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            REQ_LEGACY_STORAGE);
+                }
+            } else if (Build.VERSION.SDK_INT >= 23 && !hasLegacyStorage()) {
+                requestPermissions(new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQ_LEGACY_STORAGE);
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        // NOTE: no super.onRequestPermissionsResult() here — it does not
+        // exist below API 23 and this app supports minSdk 21. The base
+        // implementation is a no-op anyway.
+        if (requestCode != REQ_LEGACY_STORAGE) return;
+        refreshStorageState();
+        if (Build.VERSION.SDK_INT >= 30) {
+            if (!Environment.isExternalStorageManager()) {
+                // After the runtime grant step, Android 11+ needs
+                // "All files access" — take the user there now.
+                launchAllFilesScreen();
+            } else {
+                onStorageGranted();
+            }
+        } else if (storageOk()) {
+            onStorageGranted();
+        }
+    }
+
+    /** Open the system "All files access" page for this app. */
+    private void launchAllFilesScreen() {
+        if (Build.VERSION.SDK_INT < 30) return;
+        try {
+            Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(i, REQ_ALL_FILES);
+        } catch (Throwable e) {
+            try {
+                startActivityForResult(new Intent(
+                        Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION), REQ_ALL_FILES);
+            } catch (Throwable ignored) {
+                toast(R.string.msg_storage_denied);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_ALL_FILES) {
+            refreshStorageState();
+            if (storageOk()) {
+                onStorageGranted();
+            } else {
+                toast(R.string.msg_storage_denied);
+            }
+        }
+    }
+
+    private void onStorageGranted() {
+        toast(R.string.msg_storage_ready);
+        afterStorageReady();
+    }
+
+    /** (Re)prepare the public workspace once access is granted. */
+    private void afterStorageReady() {
+        if (!usePublicWs) return;
+        ioPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                final boolean ok = wsPublic.ensureSample();
+                ui.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!ok) {
+                            toast(R.string.msg_storage_denied);
+                            setPublicToggleSilent(false);
+                            usePublicWs = false;
+                            workspace = wsPrivate;
+                        }
+                        updateStatus();
+                    }
+                });
+            }
+        });
+    }
+
+    private void refreshStorageState() {
+        // File browser becomes fully usable the moment access is granted;
+        // when denied, workspace operations guide the user to grant it.
+        updateStatus();
+    }
+
+    /** Guide the user to grant access before touching the public workspace. */
+    private boolean ensureStorageForWs() {
+        if (workspace == wsPublic && !storageOk()) {
+            toast(R.string.msg_storage_needed);
+            if (Build.VERSION.SDK_INT >= 30) {
+                launchAllFilesScreen();
+            } else {
+                requestStorageIfNeeded();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    // -------------------------------------------------- workspace switching
+
+    private void setupWorkspaceToggle() {
+        wsPublicToggle = (CheckBox) findViewById(R.id.ws_public);
+        wsPublicToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                onWorkspaceToggled(isChecked);
+            }
+        });
+    }
+
+    private void setPublicToggleSilent(boolean checked) {
+        wsPublicToggle.setOnCheckedChangeListener(null);
+        wsPublicToggle.setChecked(checked);
+        wsPublicToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                onWorkspaceToggled(isChecked);
+            }
+        });
+    }
+
+    private void onWorkspaceToggled(final boolean wantPublic) {
+        if (wantPublic && !storageOk()) {
+            // No access yet: revert and guide the user to grant it.
+            setPublicToggleSilent(false);
+            usePublicWs = false;
+            workspace = wsPrivate;
+            toast(R.string.msg_storage_needed);
+            if (Build.VERSION.SDK_INT >= 30) {
+                launchAllFilesScreen();
+            } else {
+                requestStorageIfNeeded();
+            }
+            updateStatus();
+            return;
+        }
+        usePublicWs = wantPublic;
+        workspace = wantPublic ? wsPublic : wsPrivate;
+        // A file open from the other workspace loses its association.
+        if (currentFile != null && !isUnder(currentFile, workspace.dir())) {
+            currentFile = null;
+        }
+        updateStatus();
+        ioPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                final boolean ok = workspace.ensureSample();
+                ui.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (usePublicWs != wantPublic) return; // switched again
+                        if (!ok) {
+                            toast(R.string.msg_storage_denied);
+                            setPublicToggleSilent(false);
+                            usePublicWs = false;
+                            workspace = wsPrivate;
+                        } else {
+                            toast(wantPublic ? R.string.ws_switch_public
+                                             : R.string.ws_switch_private);
+                        }
+                        updateStatus();
+                    }
+                });
+            }
+        });
+    }
+
+    private static boolean isUnder(File f, File root) {
+        try {
+            String fp = f.getCanonicalPath();
+            String rp = root.getCanonicalPath();
+            return fp.startsWith(rp.endsWith("/") ? rp : rp + "/");
+        } catch (Throwable t) {
+            return false;
         }
     }
 
@@ -360,6 +629,7 @@ public class MainActivity extends Activity {
     }
 
     private void onSaveClicked(final Runnable after) {
+        if (!ensureStorageForWs()) return;
         if (currentFile == null) {
             promptNewFile(after);
             return;
@@ -393,6 +663,7 @@ public class MainActivity extends Activity {
     }
 
     private void promptNewFile(final Runnable after) {
+        if (!ensureStorageForWs()) return;
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle(R.string.dialog_new_title);
         final EditText input = new EditText(this);
@@ -450,6 +721,7 @@ public class MainActivity extends Activity {
     }
 
     private void showOpenDialog() {
+        if (!ensureStorageForWs()) return;
         ioPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -531,6 +803,7 @@ public class MainActivity extends Activity {
     }
 
     private void promptRename() {
+        if (!ensureStorageForWs()) return;
         if (currentFile == null) {
             toast(R.string.msg_no_file);
             return;
@@ -578,6 +851,7 @@ public class MainActivity extends Activity {
     }
 
     private void confirmDelete() {
+        if (!ensureStorageForWs()) return;
         if (currentFile == null) {
             toast(R.string.msg_no_file);
             return;
@@ -661,6 +935,7 @@ public class MainActivity extends Activity {
     private void doRun() {
         final File f = currentFile;
         if (f == null) return;
+        if (!ensureStorageForWs()) return;
         if (!pythonReady) {
             toast(R.string.msg_python_not_ready);
             runtime.ensureInstalled(new PythonRuntime.ReadyCallback() {
@@ -677,6 +952,9 @@ public class MainActivity extends Activity {
             });
             return;
         }
+        // Problem 3 fix: clear the output before each run so every run shows
+        // exactly its own stdout/stderr followed by ONE final exit line.
+        clearOutput(true);
         try {
             runtime.run(f, new PythonRuntime.OutputCallback() {
                 @Override
@@ -732,11 +1010,17 @@ public class MainActivity extends Activity {
     }
 
     private void clearOutput() {
+        clearOutput(false);
+    }
+
+    private void clearOutput(boolean silent) {
         synchronized (outBuf) {
             outBuf.setLength(0);
         }
         outputView.setText("");
-        toast(R.string.msg_output_cleared);
+        if (!silent) {
+            toast(R.string.msg_output_cleared);
+        }
     }
 
     // ------------------------------------------------------------------ status

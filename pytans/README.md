@@ -2,9 +2,10 @@
 
 PyTans is a lightweight, native Android IDE for Python 3. It ships a complete
 CPython 3.14 interpreter (the Termux `python` package and its shared
-libraries) inside the APK, extracts it into the app's private data directory
-on first launch, and runs your scripts entirely on-device — no root, no
-external storage permission, no network round-trip required.
+libraries) inside the APK — for **both 64-bit and 32-bit ARM devices** —
+extracts the matching tree into the app's private data directory on first
+launch, and runs your scripts entirely on-device. No root required, no
+network round-trip required.
 
 ## Features
 
@@ -12,15 +13,18 @@ external storage permission, no network round-trip required.
   (keywords, strings, comments, numbers, builtins, decorators)
 - **Undo / Redo** with typing-merge for comfortable editing
 - **Run** the current file with the bundled interpreter; stdout **and**
-  stderr stream live into an output panel below the editor
+  stderr are consumed line-by-line on separate threads and stream live into
+  the output panel (Python runs unbuffered: `-u` + `PYTHONUNBUFFERED=1`).
+  Each run clears the panel and ends with exactly one
+  `[Process finished with exit code N in X.XXs]` line, printed after both
+  stream readers have drained.
 - **Stop** button kills the running Python process
 - **Clear** output panel
-- File management for the private workspace:
-  - New file
-  - Open file (list of all `*.py` files in the workspace)
-  - Save file
-  - Rename file
-  - Delete file
+- **Two workspaces**, switchable in the UI:
+  - *App-private*: `/data/data/com.pytans/files/workspace/` (always usable)
+  - *Public storage*: `/storage/emulated/0/PyTans/` (requires storage
+    permission — see below)
+  - New / Open / Save / Rename / Delete operate on the selected workspace
 - **Status bar** showing the current file name, caret position (`line:column`)
   and the running time of the active process
 - **Auto-save** every 30 seconds when the file has unsaved changes
@@ -34,8 +38,7 @@ external storage permission, no network round-trip required.
 2. On your Android device, allow installing apps from unknown sources
    (Settings → Security → Install unknown apps) for the browser or file
    manager you use to open the APK.
-3. Tap the APK and press **Install**. The app requests only the `INTERNET`
-   permission (used by the Python standard library for sockets/urllib).
+3. Tap the APK and press **Install**.
 4. Open **PyTans** from the launcher.
 
 Requirements:
@@ -43,18 +46,41 @@ Requirements:
 - Android 5.0+ (API 21) to install the app.
 - **Android 7.0+ (API 24)** for the bundled Python runtime to actually run
   (the Termux interpreter binaries are built against SDK 24).
-- **arm64-v8a (64-bit ARM)** device. This covers virtually all modern phones.
-- ~120 MB of free internal storage (the interpreter is extracted into the
-  app's private directory on first launch).
+- **arm64-v8a (64-bit ARM) or armeabi-v7a (32-bit ARM)** device — the APK
+  contains native code for both ABIs, so it installs and runs on 32-bit
+  phones as well.
+- ~200 MB of free internal storage (the interpreter for your device's ABI
+  is extracted into the app's private directory on first launch).
+
+## Storage permission (public workspace)
+
+The app always works without any permission using the private workspace.
+To use the public workspace at `/storage/emulated/0/PyTans/`, grant access:
+
+- On **first launch** PyTans requests `READ_EXTERNAL_STORAGE` and
+  `WRITE_EXTERNAL_STORAGE` at runtime.
+- On **Android 11+ (API 30+)**, after that grant step, the app automatically
+  sends you to the system **"All files access"** screen
+  (`Settings → Apps → PyTans → Files and media → Allow access to manage all
+  files`). Tap **Allow**.
+- On **Android 6–10** granting the runtime permission dialog is enough.
+- The state is re-checked every time the app resumes (`onResume`); the
+  moment access is granted, the public workspace becomes usable. If you try
+  to switch to the public workspace (or open/save a file there) without
+  access, PyTans guides you straight to the permission screen.
+
+Manifest declarations: `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`,
+`MANAGE_EXTERNAL_STORAGE`, and `android:requestLegacyExternalStorage="true"`.
 
 ## First launch
 
-On the first start PyTans extracts the bundled CPython runtime from the APK
-assets into:
+On the first start PyTans detects the device ABI (`Build.SUPPORTED_ABIS`)
+and extracts the matching bundled CPython tree
+(`assets/python/arm64-v8a/` or `assets/python/armeabi-v7a/`) into:
 
 ```
 /data/data/com.pytans/files/python/      <- interpreter ($PREFIX)
-/data/data/com.pytans/files/workspace/   <- your scripts
+/data/data/com.pytans/files/workspace/   <- private workspace (your scripts)
 /data/data/com.pytans/files/home/        <- HOME for scripts
 ```
 
@@ -68,44 +94,50 @@ Press **Run** to execute it — the output panel shows:
 
 ```
 Hello from PyTans
-
 [Process finished with exit code 0 in 0.2s]
 ```
 
+The trees are never mixed: the arm64-v8a assets contain only 64-bit ELFs and
+the armeabi-v7a assets only 32-bit ELFs, and the launcher binary for the
+device ABI is installed per-ABI as a native library (see below).
+
 ## Usage
 
-| Button  | Action                                                              |
-|---------|---------------------------------------------------------------------|
-| New     | Create a new `.py` file in the workspace (extension auto-added)     |
-| Open    | Pick a file from the workspace file list                            |
-| Save    | Write the editor buffer to disk (UTF-8)                             |
-| Rename  | Rename the current file                                             |
-| Delete  | Delete the current file (with confirmation)                         |
-| Run     | Saves unsaved changes, then executes the current file               |
-| Stop    | Kills the running Python process                                    |
-| Clear   | Clears the output panel                                             |
+| Button / control | Action                                                              |
+|------------------|---------------------------------------------------------------------|
+| New              | Create a new `.py` file in the current workspace (extension auto-added) |
+| Open             | Pick a file from the current workspace's `.py` list                 |
+| Save             | Write the editor buffer to disk (UTF-8)                             |
+| Rename           | Rename the current file                                             |
+| Delete           | Delete the current file (with confirmation)                         |
+| Workspace □ Public storage | Switch between the private and the public workspace       |
+| Run              | Saves unsaved changes, clears the output, executes the current file |
+| Stop             | Kills the running Python process                                    |
+| Clear            | Clears the output panel                                             |
 
 Undo/Redo is available via rapid tap-undo merging (the editor records your
 typing history); the status bar always shows `file • line:column • state`
 where state is `idle`, `modified`, or the elapsed run time in seconds.
 Changes are auto-saved every 30 seconds.
 
-Everything (compilation caches, workspace files, extracted interpreter)
-stays inside the app's private data directory. No files are written to
-shared storage, and no storage permission is requested.
-
 ## Technical notes
 
-- **Interpreter**: CPython 3.14.6, Termux `python` package for `aarch64`,
-  plus its dependencies (`libandroid-support`, `openssl`, `libffi`,
-  `ncurses`, `readline`, `libbz2`, `libsqlite`, `liblzma`, `zlib`,
+- **Interpreter**: CPython 3.14.6, Termux `python` package for `aarch64`
+  *and* `arm`, plus their dependencies (`libandroid-support`, `openssl`,
+  `libffi`, `ncurses`, `readline`, `libbz2`, `libsqlite`, `liblzma`, `zlib`,
   `zstd`, `gdbm`, `libexpat`, `libcrypt`, `ca-certificates`).
-- The Python launcher binary ships as a native library
-  (`lib/arm64-v8a/libpytanspython.so`) so Android extracts it into the
-  app's `nativeLibraryDir` — the only location where apps targeting
-  SDK 29+ may execute bundled binaries. All other files live under
-  `files/python/` and are resolved via `LD_LIBRARY_PATH`, `PYTHONHOME`
-  and `PYTHONPATH` at process start.
+- **Per-ABI packaging**: each interpreter tree lives under
+  `assets/python/<abi>/`; the Python launcher binary for each ABI ships as a
+  native library (`lib/<abi>/libpytanspython.so`) so Android extracts it
+  into the app's `nativeLibraryDir` — the only location where apps
+  targeting SDK 29+ may execute bundled binaries. All other files live
+  under `files/python/` and are resolved via `LD_LIBRARY_PATH`,
+  `PYTHONHOME` and `PYTHONPATH` at process start.
+- **Unbuffered output**: scripts run with `python -u` and
+  `PYTHONUNBUFFERED=1`; the runtime reads `stdout` and `stderr`
+  line-by-line on two dedicated threads, joins them, and only then reports
+  the exit line — so `print()` output always appears, in order, exactly
+  once per run.
 - Certificate bundle: `SSL_CERT_FILE` points at the bundled CA store, so
   `urllib`/`ssl` work out of the box.
 - Limitations:
@@ -119,24 +151,23 @@ shared storage, and no storage permission is requested.
 The APK is built with the plain Android build tools:
 
 ```bash
-# 1. Stage the Python runtime into ./assets (downloads Termux debs)
+# 1. Stage the Python runtime for BOTH ABIs into ./assets
+#    (downloads Termux aarch64 + arm debs, rebases the prefix, prunes,
+#     resolves symlinks, copies each bin/python3.14 launcher stub into
+#     lib/<abi>/libpytanspython.so)
 python3 tools/prepare_python_assets.py
 
-# 2. Copy the launcher stub into the jniLibs folder
-mkdir -p lib/arm64-v8a
-cp assets/python/bin/python3.14 lib/arm64-v8a/libpytanspython.so
-
-# 3. Compile, package, align, sign
+# 2. Compile, package, align, sign
 aapt2 compile --dir res -o res.zip
 aapt2 link -o base.apk -I android.jar --manifest AndroidManifest.xml \
     --java gen -A assets --min-sdk-version 21 --target-sdk-version 34 \
-    --version-code 1 --version-name 1.0 res.zip
+    --version-code 2 --version-name 1.1 res.zip
 javac -source 1.8 -target 1.8 -bootclasspath android.jar \
     -d classes $(find src gen -name "*.java")
 d8 --release --lib android.jar --min-api 21 --output out \
     $(find classes gen -name "*.class")
 zip -j base.apk out/classes.dex
-zip -r base.apk lib
+zip -r base.apk lib        # contains lib/arm64-v8a AND lib/armeabi-v7a
 zipalign -f 4 base.apk aligned.apk
 apksigner sign --ks keystore/bashstore.keystore \
     --ks-key-alias bashstore00filetans \
@@ -151,19 +182,21 @@ Signing keystore: `keystore/bashstore.keystore`
 
 ```
 pytans/
-├── AndroidManifest.xml      app manifest (minSdk 21, targetSdk 34)
-├── pytans.apk               signed, installable build
+├── AndroidManifest.xml      app manifest (minSdk 21, targetSdk 34, storage perms)
+├── pytans.apk               signed, installable build (arm64-v8a + armeabi-v7a)
 ├── README.md                this file
 ├── src/com/pytans/
-│   ├── MainActivity.java    UI, editor logic, dialogs, auto-save, crash guard
+│   ├── MainActivity.java    UI, editor logic, dialogs, storage-permission flow,
+│   │                        workspace switching, auto-save, crash guard
 │   ├── PyEditor.java        EditText with caret-position reporting
 │   ├── SyntaxEngine.java    regex-based Python highlighter
 │   ├── UndoStack.java       undo/redo with typing merge
-│   ├── PythonRuntime.java   asset extraction + interpreter process control
-│   └── Workspace.java       private-directory file I/O
+│   ├── PythonRuntime.java   ABI detection, per-ABI asset extraction,
+│   │                        interpreter process + stream pumping
+│   └── Workspace.java       file I/O for the private and public workspaces
 ├── res/                     layouts, strings, colors (light + night), icons
 └── tools/
-    └── prepare_python_assets.py   builds assets/ from Termux packages
+    └── prepare_python_assets.py   builds assets/python/<abi>/ from Termux packages
 ```
 
 Every `Activity.onCreate` is wrapped in `try/catch (Throwable)` and a global

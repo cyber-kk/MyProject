@@ -1,210 +1,232 @@
 #!/usr/bin/env python3
 """
-Fetch Termux python3 + dependency .deb packages for aarch64, extract,
-rebase prefix (strip /data/data/com.termux/files/usr), prune, resolve
-symlinks to copies, and stage into the APK assets dir.
+Fetch Termux python3 + dependency .deb packages for BOTH aarch64 (arm64-v8a)
+and arm (armeabi-v7a), extract, rebase prefix (strip
+/data/data/com.termux/files/usr), prune, resolve symlinks to copies, and
+stage into per-ABI APK asset dirs.
 
-Output: /home/z/my-project/pytans-build/assets/python/   (the new $PREFIX)
-        prints python version + layout summary
+Output layout (Problem-1 fix):
+  pytans-build/assets/python/arm64-v8a/       <- $PREFIX tree for arm64
+  pytans-build/assets/python/armeabi-v7a/     <- $PREFIX tree for 32-bit arm
+  pytans-build/lib/arm64-v8a/libpytanspython.so
+  pytans-build/lib/armeabi-v7a/libpytanspython.so
 """
 import gzip
 import io
 import lzma
 import os
+import re
 import shutil
 import subprocess
-import sys
 import tarfile
 import urllib.request
 
 BASE = "/home/z/my-project/pytans-build"
-DEBS = os.path.join(BASE, "debs")
-STAGE = os.path.join(BASE, "stage")          # raw tar extraction (termux paths)
-ROOT = os.path.join(BASE, "assets")          # assets root
-PYDIR = os.path.join(ROOT, "python")         # new prefix root
 REPO = "https://packages.termux.dev/apt/termux-main"
-ARCH = "binary-aarch64"
+DEBS = os.path.join(BASE, "debs")            # debs/<arch>/
+STAGE = os.path.join(BASE, "stage")          # stage/<arch>/ (termux paths)
+ROOT = os.path.join(BASE, "assets")          # assets root
+LIBOUT = os.path.join(BASE, "lib")           # jniLibs staging (launcher stub)
 
-os.makedirs(DEBS, exist_ok=True)
-shutil.rmtree(STAGE, ignore_errors=True)
-shutil.rmtree(ROOT, ignore_errors=True)
-os.makedirs(PYDIR, exist_ok=True)
+# termux arch -> android ABI
+ABI_SPECS = [
+    ("aarch64", "arm64-v8a"),
+    ("arm", "armeabi-v7a"),
+]
+
+ROOT_PKGS = ["python", "ca-certificates"]
 
 
 def fetch(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "pytans-builder/1.0"})
-    with urllib.request.urlopen(req, timeout=120) as r:
+    req = urllib.request.Request(url, headers={"User-Agent": "pytans-builder/1.1"})
+    with urllib.request.urlopen(req, timeout=300) as r:
         return r.read()
 
 
-# ---------- 1. package index ----------
-idx_url = REPO + "/dists/stable/main/" + ARCH + "/Packages"
-print("fetching index:", idx_url)
-try:
-    raw = fetch(idx_url)
-except Exception:
-    raw = lzma.decompress(fetch(idx_url + ".xz"))
-if raw[:2] == b"\x1f\x8b":
-    raw = gzip.decompress(raw)
-
-packages = {}   # name -> dict(version, filename, deps)
-cur = {}
-for line in raw.decode("utf-8", "replace").splitlines():
-    if not line.strip():
-        if cur.get("Package"):
-            packages.setdefault(cur["Package"], cur)
-        cur = {}
-        continue
-    if ":" in line:
-        k, v = line.split(":", 1)
-        cur[k.strip()] = v.strip()
-if cur.get("Package"):
-    packages.setdefault(cur["Package"], cur)
-print("index packages:", len(packages))
-
-# ---------- 2. resolve deps ----------
-def dep_names(depstr):
-    out = []
-    for chunk in depstr.split(","):
-        chunk = chunk.strip()
-        if not chunk:
+def load_index(arch):
+    url = REPO + "/dists/stable/main/binary-" + arch + "/Packages"
+    print("fetching index:", url)
+    try:
+        raw = fetch(url)
+    except Exception:
+        raw = fetch(url + ".xz")
+    if raw[:2] == b"\x1f\x8b":
+        raw = gzip.decompress(raw)
+    elif raw[:6] == b"\xfd7zXZ\x00":
+        raw = lzma.decompress(raw)
+    packages = {}
+    cur = {}
+    for line in raw.decode("utf-8", "replace").splitlines():
+        if not line.strip():
+            if cur.get("Package"):
+                packages.setdefault(cur["Package"], cur)
+            cur = {}
             continue
-        first = chunk.split("|")[0].strip()
-        name = first.split(" ")[0]
-        out.append(name)
-    return out
+        if ":" in line:
+            k, v = line.split(":", 1)
+            cur[k.strip()] = v.strip()
+    if cur.get("Package"):
+        packages.setdefault(cur["Package"], cur)
+    print("index [%s] packages: %d" % (arch, len(packages)))
+    return packages
 
-ROOT_PKGS = ["python", "ca-certificates"]
-todo = list(ROOT_PKGS)
-seen = set()
-plan = {}
-while todo:
-    name = todo.pop(0)
-    if name in seen:
-        continue
-    seen.add(name)
-    info = packages.get(name)
-    if info is None:
-        print("WARN: package not in index:", name)
-        continue
-    plan[name] = info
-    for d in dep_names(info.get("Depends", "")):
-        if d not in seen:
-            todo.append(d)
-print("resolved %d packages:" % len(plan))
-for n in sorted(plan):
-    print("  ", n, plan[n].get("Version", "?"))
 
-# ---------- 3. download debs ----------
-for name, info in sorted(plan.items()):
-    url = REPO + "/" + info["Filename"]
-    dest = os.path.join(DEBS, os.path.basename(info["Filename"]))
-    if os.path.exists(dest) and os.path.getsize(dest) > 0:
-        print("cached:", os.path.basename(dest))
-        continue
-    print("download:", os.path.basename(dest))
-    data = fetch(url)
-    with open(dest, "wb") as f:
-        f.write(data)
+def resolve_deps(packages):
+    todo = list(ROOT_PKGS)
+    seen = set()
+    plan = {}
+    while todo:
+        name = todo.pop(0)
+        if name in seen:
+            continue
+        seen.add(name)
+        info = packages.get(name)
+        if info is None:
+            print("WARN: package not in index:", name)
+            continue
+        plan[name] = info
+        for chunk in info.get("Depends", "").split(","):
+            chunk = chunk.strip()
+            if not chunk:
+                continue
+            d = chunk.split("|")[0].strip().split(" ")[0]
+            if d and d not in seen:
+                todo.append(d)
+    return plan
 
-# ---------- 4. extract data.tar.* ----------
-for name, info in sorted(plan.items()):
-    deb = os.path.join(DEBS, os.path.basename(info["Filename"]))
+
+def extract_deb(deb, stage_dir):
     members = subprocess.run(["ar", "t", deb], capture_output=True, text=True).stdout.split()
-    data_member = [m for m in members if m.startswith("data.tar")]
-    if not data_member:
+    data_members = [m for m in members if m.startswith("data.tar")]
+    if not data_members:
         print("SKIP (no data.tar):", deb)
-        continue
-    member = data_member[0]
+        return
+    member = data_members[0]
     raw_tar = subprocess.run(["ar", "p", deb, member], capture_output=True).stdout
     if member.endswith(".xz"):
         buf = lzma.decompress(raw_tar)
-        mode = "r:"
     elif member.endswith(".gz"):
         buf = gzip.decompress(raw_tar)
-        mode = "r:"
     elif member.endswith(".zst"):
         import zstandard
         buf = zstandard.ZstdDecompressor().decompress(raw_tar)
-        mode = "r:"
     else:
         buf = raw_tar
-        mode = "r:"
-    with tarfile.open(fileobj=io.BytesIO(buf), mode=mode) as tf:
-        tf.extractall(STAGE)
-    print("extracted:", os.path.basename(deb))
+    with tarfile.open(fileobj=io.BytesIO(buf), mode="r:") as tf:
+        tf.extractall(stage_dir)
 
-# ---------- 5. rebase prefix ----------
-usr = os.path.join(STAGE, "data/data/com.termux/files/usr")
-if not os.path.isdir(usr):
-    # some builds may have ./usr directly
-    alt = os.path.join(STAGE, "usr")
-    usr = alt if os.path.isdir(alt) else usr
-assert os.path.isdir(usr), "termux usr dir not found: " + usr
-for entry in os.listdir(usr):
-    shutil.move(os.path.join(usr, entry), os.path.join(PYDIR, entry))
-print("rebased prefix ->", PYDIR)
 
-# ---------- 6. prune ----------
 PRUNE_DIRS = ["include", "share/man", "share/doc", "share/info", "share/locale",
               "lib/pkgconfig", "lib/cmake", "share/pkgconfig", "share/man3"]
-for d in PRUNE_DIRS:
-    p = os.path.join(PYDIR, d)
-    if os.path.isdir(p):
-        shutil.rmtree(p)
-        print("pruned dir:", d)
+PRUNE_STDLIB = ["test", "idlelib", "turtledemo", "lib2to3"]
 
-import re
-pyver = None
-for e in os.listdir(os.path.join(PYDIR, "lib")):
-    if re.match(r"python3\.\d+$", e):
-        pyver = e
-print("stdlib dir:", pyver)
-stdlib = os.path.join(PYDIR, "lib", pyver)
-for d in ["test", "idlelib", "turtledemo", "lib2to3"]:
-    p = os.path.join(stdlib, d)
-    if os.path.isdir(p):
-        shutil.rmtree(p)
-        print("pruned stdlib:", d)
-# remove __pycache__ everywhere and static libs
-for dirpath, dirnames, filenames in os.walk(PYDIR):
-    for dn in list(dirnames):
-        if dn == "__pycache__":
-            shutil.rmtree(os.path.join(dirpath, dn))
-            dirnames.remove(dn)
-    for fn in filenames:
-        if fn.endswith(".a") or fn.endswith(".pyc"):
-            os.remove(os.path.join(dirpath, fn))
-# prune old .pyo-like/egg stuff not needed; keep site-packages for pip
 
-# ---------- 7. resolve symlinks -> real copies ----------
-fixed, dropped = [], []
-for dirpath, dirnames, filenames in os.walk(PYDIR):
-    for fn in dirnames + filenames:
-        p = os.path.join(dirpath, fn)
-        if os.path.islink(p):
-            target = os.readlink(p)
-            if os.path.isabs(target):
-                if target.startswith("/data/data/com.termux/files/usr/"):
-                    real = os.path.join(PYDIR, target[len("/data/data/com.termux/files/usr/"):])
+def build_tree(arch, abi, packages):
+    deb_dir = os.path.join(DEBS, arch)
+    stage_dir = os.path.join(STAGE, arch)
+    py_dir = os.path.join(ROOT, "python", abi)
+    os.makedirs(deb_dir, exist_ok=True)
+    os.makedirs(py_dir, exist_ok=True)
+
+    plan = resolve_deps(packages)
+    print("[%s] resolved %d packages:" % (abi, len(plan)))
+    for n in sorted(plan):
+        print("  ", n, plan[n].get("Version", "?"))
+
+    for name, info in sorted(plan.items()):
+        url = REPO + "/" + info["Filename"]
+        dest = os.path.join(deb_dir, os.path.basename(info["Filename"]))
+        if os.path.exists(dest) and os.path.getsize(dest) > 0:
+            print("cached:", os.path.basename(dest))
+            continue
+        print("download:", os.path.basename(dest))
+        data = fetch(url)
+        with open(dest, "wb") as f:
+            f.write(data)
+
+    shutil.rmtree(stage_dir, ignore_errors=True)
+    os.makedirs(stage_dir, exist_ok=True)
+    for name, info in sorted(plan.items()):
+        deb = os.path.join(deb_dir, os.path.basename(info["Filename"]))
+        extract_deb(deb, stage_dir)
+        print("extracted:", os.path.basename(deb))
+
+    usr = os.path.join(stage_dir, "data/data/com.termux/files/usr")
+    if not os.path.isdir(usr):
+        alt = os.path.join(stage_dir, "usr")
+        usr = alt if os.path.isdir(alt) else usr
+    assert os.path.isdir(usr), "termux usr dir not found: " + usr
+    for entry in os.listdir(usr):
+        shutil.move(os.path.join(usr, entry), os.path.join(py_dir, entry))
+    print("[%s] rebased prefix -> %s" % (abi, py_dir))
+
+    # prune
+    for d in PRUNE_DIRS:
+        p = os.path.join(py_dir, d)
+        if os.path.isdir(p):
+            shutil.rmtree(p)
+            print("[%s] pruned dir:" % abi, d)
+
+    pyver = None
+    for e in os.listdir(os.path.join(py_dir, "lib")):
+        if re.match(r"python3\.\d+$", e):
+            pyver = e
+    print("[%s] stdlib dir:" % abi, pyver)
+    assert pyver, "no python3.x stdlib dir found for " + abi
+    stdlib = os.path.join(py_dir, "lib", pyver)
+    for d in PRUNE_STDLIB:
+        p = os.path.join(stdlib, d)
+        if os.path.isdir(p):
+            shutil.rmtree(p)
+            print("[%s] pruned stdlib:" % abi, d)
+    for dirpath, dirnames, filenames in os.walk(py_dir):
+        for dn in list(dirnames):
+            if dn == "__pycache__":
+                shutil.rmtree(os.path.join(dirpath, dn))
+                dirnames.remove(dn)
+        for fn in filenames:
+            if fn.endswith(".a") or fn.endswith(".pyc"):
+                os.remove(os.path.join(dirpath, fn))
+
+    # resolve symlinks -> real copies
+    fixed, dropped = [], []
+    for dirpath, dirnames, filenames in os.walk(py_dir):
+        for fn in dirnames + filenames:
+            p = os.path.join(dirpath, fn)
+            if os.path.islink(p):
+                target = os.readlink(p)
+                if os.path.isabs(target):
+                    if target.startswith("/data/data/com.termux/files/usr/"):
+                        real = os.path.join(py_dir, target[len("/data/data/com.termux/files/usr/"):])
+                    else:
+                        real = None
                 else:
-                    real = None
-            else:
-                real = os.path.normpath(os.path.join(dirpath, target))
-            if real and os.path.isfile(real) and not os.path.islink(real):
-                st = os.stat(real)
-                os.unlink(p)
-                shutil.copy2(real, p)
-                os.chmod(p, st.st_mode)
-                fixed.append((os.path.relpath(p, PYDIR), target))
-            else:
-                os.unlink(p)
-                dropped.append((os.path.relpath(p, PYDIR), target))
-print("symlinks resolved:", len(fixed), "dropped:", len(dropped))
-for n, t in dropped:
-    print("  DROPPED:", n, "->", t)
+                    real = os.path.normpath(os.path.join(dirpath, target))
+                if real and os.path.isfile(real) and not os.path.islink(real):
+                    st = os.stat(real)
+                    os.unlink(p)
+                    shutil.copy2(real, p)
+                    os.chmod(p, st.st_mode)
+                    fixed.append((os.path.relpath(p, py_dir), target))
+                else:
+                    os.unlink(p)
+                    dropped.append((os.path.relpath(p, py_dir), target))
+    print("[%s] symlinks resolved: %d dropped: %d" % (abi, len(fixed), len(dropped)))
+    for n, t in dropped:
+        print("  DROPPED:", n, "->", t)
 
-# ---------- 8. summary ----------
+    # launcher stub -> jniLibs (exec from nativeLibraryDir; targetSdk>=29 rule)
+    stub = os.path.join(py_dir, "bin", "python3.14")
+    assert os.path.isfile(stub), "missing launcher stub " + stub
+    libdir = os.path.join(LIBOUT, abi)
+    os.makedirs(libdir, exist_ok=True)
+    shutil.copy2(stub, os.path.join(libdir, "libpytanspython.so"))
+    os.chmod(os.path.join(libdir, "libpytanspython.so"), 0o755)
+    print("[%s] launcher stub -> %s" % (abi, os.path.join(libdir, "libpytanspython.so")))
+
+    return py_dir, pyver
+
+
 def du(path):
     total = 0
     for dp, dns, fns in os.walk(path):
@@ -212,25 +234,62 @@ def du(path):
             total += os.path.getsize(os.path.join(dp, f))
     return total
 
-print("asset size: %.1f MB" % (du(PYDIR) / 1e6))
-key = [
-    "bin/python3.13", "bin/python3", "lib/libpython3.13.so.1.0",
-    "lib/python3.13/os.py", "lib/python3.13/lib-dynload/_ssl.cpython-313.so",
-    "etc/tls/cert.pem", "bin/pip3",
-]
-print("--- key files ---")
-for k in key:
-    p = os.path.join(PYDIR, k)
-    print(("OK  " if os.path.exists(p) else "MISS"), k)
-# find actual _ssl module name
-dyn = os.path.join(stdlib, "lib-dynload")
-if os.path.isdir(dyn):
-    ssls = [f for f in os.listdir(dyn) if f.startswith("_ssl")]
-    print("ssl module:", ssls)
-    print("dynload count:", len(os.listdir(dyn)))
-# python binary type
-out = subprocess.run(["file", os.path.join(PYDIR, "bin", "python3.13")], capture_output=True, text=True).stdout
-print(out.strip())
-# keep python version for later scripts
-open(os.path.join(BASE, "pyver.txt"), "w").write(pyver or "")
-print("DONE")
+
+def elf_check(path):
+    out = subprocess.run(["file", "-b", path], capture_output=True, text=True).stdout.strip()
+    return out
+
+
+def main():
+    shutil.rmtree(ROOT, ignore_errors=True)
+    os.makedirs(ROOT, exist_ok=True)
+
+    summary = []
+    for arch, abi in ABI_SPECS:
+        print("\n========== %s (%s) ==========" % (arch, abi))
+        packages = load_index(arch)
+        py_dir, pyver = build_tree(arch, abi, packages)
+        summary.append((abi, py_dir, pyver))
+
+    print("\n========== SUMMARY ==========")
+    for abi, py_dir, pyver in summary:
+        print("ABI %s: %.1f MB, stdlib %s" % (abi, du(py_dir) / 1e6, pyver))
+        # key files
+        keys = [
+            "bin/python3.14",
+            "lib/libpython3.14.so",
+            "lib/%s/os.py" % pyver,
+            "lib/%s/lib-dynload" % pyver,
+            "etc/tls/cert.pem",
+        ]
+        for k in keys:
+            p = os.path.join(py_dir, k)
+            print(("  OK  " if os.path.exists(p) else "  MISS"), k)
+        dyn = os.path.join(py_dir, "lib", pyver, "lib-dynload")
+        if os.path.isdir(dyn):
+            ssls = [f for f in os.listdir(dyn) if f.startswith("_ssl")]
+            print("  ssl module:", ssls, "| dynload modules:", len(os.listdir(dyn)))
+        print("  python stub ELF:", elf_check(os.path.join(py_dir, "bin", "python3.14")))
+        print("  libpython ELF:", elf_check(os.path.join(py_dir, "lib", "libpython3.14.so")))
+        print("  jniLib stub ELF:", elf_check(os.path.join(LIBOUT, abi, "libpytanspython.so")))
+        # verify .so ABIs match: readelf machine
+        so_files = []
+        libdir = os.path.join(py_dir, "lib")
+        for fn in os.listdir(libdir):
+            fp = os.path.join(libdir, fn)
+            if os.path.isfile(fp) and fn.endswith(".so"):
+                so_files.append(fp)
+        machines = set()
+        for fp in so_files:
+            out = subprocess.run(["readelf", "-h", fp], capture_output=True, text=True).stdout
+            m = re.search(r"Machine:\s+(.+)", out)
+            c = re.search(r"Class:\s+(.+)", out)
+            if m:
+                machines.add((c.group(1).strip() if c else "?", m.group(1).strip()))
+        print("  ELF machines in lib/:", sorted(machines))
+
+    print("\nDONE")
+
+
+if __name__ == "__main__":
+    main()

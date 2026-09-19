@@ -116,6 +116,36 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <!-- Workspace chooser: app-private vs public storage (/storage/emulated/0/PyTans) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/window_bg"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp">
+
+        <TextView
+            android:id="@+id/ws_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/workspace_label"
+            android:textColor="@color/header_sub"
+            android:textSize="12sp" />
+
+        <CheckBox
+            android:id="@+id/ws_public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="@string/ws_public_toggle"
+            android:textColor="@color/btn_text"
+            android:textSize="12sp" />
+    </LinearLayout>
+
     <!-- Editor: line numbers + code, sharing one vertical ScrollView -->
     <ScrollView
         android:id="@+id/editor_scroll"

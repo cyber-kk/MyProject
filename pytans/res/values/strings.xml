@@ -59,4 +59,12 @@
     <string name="msg_save_error">Could not save file: %1$s</string>
     <string name="msg_run_error">Failed to start Python: %1$s</string>
     <string name="workspace_label">Workspace</string>
+
+    <!-- Workspace / storage (Problem 2) -->
+    <string name="ws_public_toggle">Public storage</string>
+    <string name="ws_switch_private">Workspace: app-private (/data/data/com.pytans/files/workspace)</string>
+    <string name="ws_switch_public">Workspace: /storage/emulated/0/PyTans</string>
+    <string name="msg_storage_needed">Storage access is required for the public workspace</string>
+    <string name="msg_storage_denied">Storage access was not granted — public workspace disabled</string>
+    <string name="msg_storage_ready">Storage access granted</string>
 </resources>
